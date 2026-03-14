@@ -1,15 +1,24 @@
 {
   "name": "@8ux-co/eelzap-mcp-server",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.1.1",
   "type": "module",
   "description": "Standalone MCP server for the Eel Zap CMS",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/8ux-co/eelzap-mcp-server"
+  },
+  "homepage": "https://github.com/8ux-co/eelzap-mcp-server#readme",
+  "bugs": {
+    "url": "https://github.com/8ux-co/eelzap-mcp-server/issues"
+  },
   "bin": {
     "eelzap-mcp": "dist/index.js"
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=20"
@@ -18,7 +27,9 @@
     "build": "tsup",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",

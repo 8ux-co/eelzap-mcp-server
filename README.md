@@ -2,6 +2,12 @@
 
 Standalone MCP server for the Eel Zap CMS.
 
+## Install
+
+```bash
+npm install -g @8ux-co/eelzap-mcp-server
+```
+
 ## Configuration
 
 Set these environment variables before starting the server:
@@ -18,6 +24,15 @@ npm test
 ```
 
 ## Usage
+
+Run from npm:
+
+```bash
+EELZAP_API_KEY=cms_secret_... \
+npx -y @8ux-co/eelzap-mcp-server
+```
+
+Run from a local checkout during development:
 
 ```bash
 EELZAP_API_KEY=cms_secret_... \
