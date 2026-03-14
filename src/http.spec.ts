@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { CmsHttpClient, HttpError, parseJsonResponse } from './http.js';
+import { CmsHttpClient, parseJsonResponse } from './http.js';
 
 const config = {
   apiKey: 'cms_secret_test',
