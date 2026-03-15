@@ -113,6 +113,28 @@ function extractErrorMessage(payload: unknown): string | null {
   }
 
   if (typeof payload === 'object') {
+    const errors = (payload as Record<string, unknown>).errors;
+    if (Array.isArray(errors) && errors.length > 0) {
+      const messages = errors
+        .flatMap((entry) => {
+          if (
+            typeof entry === 'object' &&
+            entry !== null &&
+            'message' in entry &&
+            typeof (entry as Record<string, unknown>).message === 'string'
+          ) {
+            return [(entry as Record<string, string>).message];
+          }
+
+          return [];
+        })
+        .filter((message) => message.trim().length > 0);
+
+      if (messages.length > 0) {
+        return messages.join('; ');
+      }
+    }
+
     for (const key of ['message', 'error']) {
       const value = (payload as Record<string, unknown>)[key];
       if (typeof value === 'string' && value.trim()) {

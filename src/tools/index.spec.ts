@@ -148,4 +148,74 @@ describe('createAllTools', () => {
       }),
     );
   });
+
+  it('confirms uploaded media with the payload expected by the public API', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(new Uint8Array([1, 2, 3, 4, 5, 6, 7]), {
+          status: 200,
+          headers: {
+            'content-type': 'image/png',
+            'content-length': '7',
+          },
+        }),
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            uploadUrl: 'https://storage.example.com/upload',
+            mediaId: 'media_1',
+            key: 'sites/site_1/media/media_1/pikachu.png',
+          }),
+          { status: 201 },
+        ),
+      )
+      .mockResolvedValueOnce(new Response(null, { status: 200 }))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ media: { id: 'media_1' } }), {
+          status: 200,
+        }),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ media: { id: 'media_1' } }), {
+          status: 200,
+        }),
+      );
+    vi.stubGlobal('fetch', fetchMock);
+
+    const tools = createAllTools(
+      new CmsHttpClient({
+        apiKey: 'cms_secret_test',
+        baseUrl: 'https://cms.example.com',
+        pathPrefix: '/v1',
+      }),
+    );
+
+    const uploadMediaFromUrl = tools.find(
+      (tool) => tool.name === 'upload_media_from_url',
+    );
+    expect(uploadMediaFromUrl).toBeDefined();
+
+    await uploadMediaFromUrl!.handler({
+      url: 'https://example.com/pikachu.png',
+      title: 'Pikachu',
+      alt: 'Pikachu official art',
+    });
+
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      4,
+      new URL('https://cms.example.com/v1/media/confirm'),
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          mediaId: 'media_1',
+          key: 'sites/site_1/media/media_1/pikachu.png',
+          filename: 'pikachu.png',
+          contentType: 'image/png',
+          size: 7,
+        }),
+      }),
+    );
+  });
 });

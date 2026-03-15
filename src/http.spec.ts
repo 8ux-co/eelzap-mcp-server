@@ -36,6 +36,25 @@ describe('parseJsonResponse', () => {
       }),
     );
   });
+
+  it('surfaces validation error arrays in the HttpError message', async () => {
+    const response = new Response(
+      JSON.stringify({
+        errors: [{ fieldKey: 'title', message: 'Field "Title" is required.' }],
+      }),
+      {
+        status: 422,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+
+    await expect(parseJsonResponse(response)).rejects.toEqual(
+      expect.objectContaining({
+        message: 'Field "Title" is required.',
+        status: 422,
+      }),
+    );
+  });
 });
 
 describe('CmsHttpClient', () => {

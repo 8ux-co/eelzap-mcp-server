@@ -21,6 +21,7 @@ type UploadSpec = {
   uploadHeaders?: Record<string, string>;
   confirmPayload?: Record<string, unknown>;
   mediaId?: string;
+  key?: string;
   media?: { id?: string };
 };
 
@@ -142,7 +143,17 @@ async function uploadFromUrl(
   }
 
   const mediaId = uploadSpec.mediaId ?? uploadSpec.media?.id;
-  const confirmPayload = uploadSpec.confirmPayload ?? (mediaId ? { mediaId } : {});
+  const confirmPayload =
+    uploadSpec.confirmPayload ??
+    (mediaId
+      ? {
+          mediaId,
+          key: uploadSpec.key ?? filename,
+          filename,
+          contentType: downloaded.contentType,
+          size: downloaded.buffer.byteLength,
+        }
+      : {});
   const confirmed = await client.request<unknown>({
     method: 'POST',
     path: '/media/confirm',
