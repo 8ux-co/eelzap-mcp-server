@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { CmsHttpClient } from '../http.js';
 import { KeySchema, LocaleSchema } from '../schemas.js';
-import { readOnlyAnnotations, updateAnnotations } from '../toolkit.js';
+import { readOnlyAnnotations, updateAnnotations, RICH_TEXT_INSTRUCTIONS } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
 
 export function createDocumentValueTools(
@@ -26,10 +26,10 @@ export function createDocumentValueTools(
     {
       name: 'set_document_values',
       title: 'Set Document Values',
-      description: 'Set field-keyed values for a document.',
+      description: 'Set field-keyed values for a document.\n\n' + RICH_TEXT_INSTRUCTIONS,
       inputSchema: z.object({
         documentKey: KeySchema,
-        values: z.record(z.string(), z.unknown()),
+        values: z.record(z.string(), z.unknown()).describe('Field values. For RICH_TEXT fields, the value MUST be an HTML string with formatting conforming to instructions, NOT a JSON object.'),
         locale: LocaleSchema.optional(),
       }),
       annotations: updateAnnotations,

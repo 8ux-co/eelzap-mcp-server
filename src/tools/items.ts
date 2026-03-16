@@ -12,6 +12,7 @@ import {
   deleteAnnotations,
   readOnlyAnnotations,
   updateAnnotations,
+  RICH_TEXT_INSTRUCTIONS,
 } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
 
@@ -58,11 +59,11 @@ export function createItemTools(client: CmsHttpClient): ToolDefinition[] {
     {
       name: 'create_item',
       title: 'Create Item',
-      description: 'Create a draft item with field-keyed values.',
+      description: 'Create a draft item with field-keyed values.\n\n' + RICH_TEXT_INSTRUCTIONS,
       inputSchema: z.object({
         collectionKey: KeySchema,
         slug: ItemSlugSchema,
-        values: z.record(z.string(), z.unknown()),
+        values: z.record(z.string(), z.unknown()).describe('Field values. For RICH_TEXT fields, the value MUST be an HTML string with formatting conforming to instructions, NOT a JSON object.'),
         locale: LocaleSchema.optional(),
       }),
       annotations: createAnnotations,
@@ -76,12 +77,12 @@ export function createItemTools(client: CmsHttpClient): ToolDefinition[] {
     {
       name: 'update_item',
       title: 'Update Item',
-      description: 'Update an item and its field-keyed values.',
+      description: 'Update an item and its field-keyed values.\n\n' + RICH_TEXT_INSTRUCTIONS,
       inputSchema: z.object({
         collectionKey: KeySchema,
         slug: ItemSlugSchema,
         nextSlug: ItemSlugSchema.optional(),
-        values: z.record(z.string(), z.unknown()).optional(),
+        values: z.record(z.string(), z.unknown()).describe('Field values. For RICH_TEXT fields, the value MUST be an HTML string with formatting conforming to instructions, NOT a JSON object.').optional(),
         locale: LocaleSchema.optional(),
       }),
       annotations: updateAnnotations,

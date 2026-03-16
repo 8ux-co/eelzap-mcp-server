@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig } from './config.js';
 import { CmsHttpClient } from './http.js';
-import { registerTools } from './toolkit.js';
+import { registerPrompts, registerTools } from './toolkit.js';
 import { createAllTools } from './tools/index.js';
 
 export function createServer(config: ServerConfig): {
@@ -15,6 +15,7 @@ export function createServer(config: ServerConfig): {
   const client = new CmsHttpClient(config);
 
   registerTools(server, createAllTools(client));
+  registerPrompts(server);
 
   return { server, client };
 }
