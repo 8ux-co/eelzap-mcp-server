@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('@inquirer/prompts', () => ({
   select: vi.fn(),
-  password: vi.fn(),
+  input: vi.fn(),
 }));
 
 vi.mock('./utils/health-check.js', () => ({
@@ -27,12 +27,12 @@ vi.mock('./utils/detect.js', () => ({
 }));
 
 import { runSwitchKey } from './switch-key.js';
-import { select, password } from '@inquirer/prompts';
+import { select, input } from '@inquirer/prompts';
 import { healthCheck } from './utils/health-check.js';
 import { detectInstallations } from './utils/detect.js';
 
 const mockSelect = vi.mocked(select);
-const mockPassword = vi.mocked(password);
+const mockInput = vi.mocked(input);
 const mockHealthCheck = vi.mocked(healthCheck);
 const mockDetectInstallations = vi.mocked(detectInstallations);
 
@@ -96,15 +96,15 @@ describe('runSwitchKey — single installation', () => {
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Updated'));
   });
 
-  it('uses password prompt when no --api-key flag', async () => {
+  it('uses input prompt when no --api-key flag', async () => {
     const inst = makeInstallation();
     mockDetectInstallations.mockResolvedValue([inst as never]);
-    mockPassword.mockResolvedValueOnce('secret_prompted');
+    mockInput.mockResolvedValueOnce('secret_prompted');
     mockHealthCheck.mockResolvedValue({ ok: true });
 
     await runSwitchKey([]);
 
-    expect(mockPassword).toHaveBeenCalled();
+    expect(mockInput).toHaveBeenCalled();
     expect(inst.tool.write).toHaveBeenCalledWith(
       '/tmp/test-config.json',
       expect.objectContaining({ apiKey: 'secret_prompted' }),

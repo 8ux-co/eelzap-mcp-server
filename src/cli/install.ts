@@ -1,4 +1,4 @@
-import { select, input, password, confirm } from '@inquirer/prompts';
+import { select, input, confirm } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { healthCheck } from './utils/health-check.js';
 import { ALL_ADAPTERS, findAdapter } from './utils/detect.js';
@@ -96,7 +96,7 @@ export async function runInstall(args: string[]): Promise<void> {
     }
     apiKey = flags.apiKey;
   } else {
-    apiKey = await password({
+    apiKey = await input({
       message: 'Enter your Eel Zap API key (secret_... or public_...):',
       validate: validateApiKey,
     });

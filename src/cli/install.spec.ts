@@ -3,7 +3,6 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 vi.mock('@inquirer/prompts', () => ({
   select: vi.fn(),
   input: vi.fn(),
-  password: vi.fn(),
   confirm: vi.fn(),
 }));
 
@@ -45,11 +44,10 @@ vi.mock('./utils/detect.js', () => ({
 }));
 
 import { runInstall } from './install.js';
-import { select, password, confirm, input } from '@inquirer/prompts';
+import { select, confirm, input } from '@inquirer/prompts';
 import { healthCheck } from './utils/health-check.js';
 
 const mockSelect = vi.mocked(select);
-const mockPassword = vi.mocked(password);
 const mockConfirm = vi.mocked(confirm);
 const mockInput = vi.mocked(input);
 const mockHealthCheck = vi.mocked(healthCheck);
@@ -77,7 +75,7 @@ describe('runInstall — flag parsing', () => {
     await runInstall(['--tool', 'test-tool', '--api-key', 'secret_flagtest']);
 
     expect(mockSelect).not.toHaveBeenCalled();
-    expect(mockPassword).not.toHaveBeenCalled();
+    expect(mockInput).not.toHaveBeenCalled();
     expect(singleScopeAdapter.write).toHaveBeenCalledWith(
       '/tmp/test-config.json',
       expect.objectContaining({ apiKey: 'secret_flagtest' }),
@@ -113,14 +111,14 @@ describe('runInstall — flag parsing', () => {
 describe('runInstall — interactive prompts', () => {
   it('uses prompts when no flags are provided', async () => {
     mockSelect.mockResolvedValueOnce('test-tool');
-    mockPassword.mockResolvedValueOnce('secret_interactive');
+    mockInput.mockResolvedValueOnce('secret_interactive');
     // mockConfirm defaults to false (no custom base URL) from beforeEach
     mockHealthCheck.mockResolvedValue({ ok: true, siteName: 'Interactive Site' });
 
     await runInstall([]);
 
     expect(mockSelect).toHaveBeenCalled();
-    expect(mockPassword).toHaveBeenCalled();
+    expect(mockInput).toHaveBeenCalled();
     expect(singleScopeAdapter.write).toHaveBeenCalled();
   });
 

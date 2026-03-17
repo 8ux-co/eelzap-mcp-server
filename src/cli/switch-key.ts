@@ -1,4 +1,4 @@
-import { select, password } from '@inquirer/prompts';
+import { select, input } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { detectInstallations, findAdapter } from './utils/detect.js';
 import { healthCheck } from './utils/health-check.js';
@@ -87,7 +87,7 @@ export async function runSwitchKey(args: string[]): Promise<void> {
     }
     newApiKey = flags.apiKey;
   } else {
-    newApiKey = await password({
+    newApiKey = await input({
       message: 'Enter new API key:',
       validate: validateApiKey,
     });
