@@ -9,7 +9,6 @@ function buildEsLintCommand(files) {
 
 module.exports = {
   '*.{js,ts}': [buildEsLintCommand],
-  // Run a full type-check and test suite once per commit (no file args appended)
-  // Coverage threshold is enforced by prepublishOnly, not on every commit
-  '*': () => ['npx tsc --noEmit', 'npm test'],
+  // Run a full type-check and coverage check once per commit (no file args appended)
+  '*': () => ['npx tsc --noEmit', 'npm run test:coverage'],
 };
