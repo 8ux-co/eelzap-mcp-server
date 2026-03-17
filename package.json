@@ -1,6 +1,6 @@
 {
   "name": "@8ux-co/eelzap-mcp-server",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "type": "module",
   "description": "Standalone MCP server for the Eel Zap CMS",
   "license": "MIT",
