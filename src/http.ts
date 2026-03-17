@@ -1,5 +1,51 @@
 import type { ServerConfig } from './config.js';
 
+// ---------------------------------------------------------------------------
+// Concurrency semaphore — caps the number of simultaneous in-flight requests.
+// Without this, a fast LLM issuing many tool calls in parallel can exhaust
+// the server's connection pool.
+// ---------------------------------------------------------------------------
+
+class Semaphore {
+  readonly #limit: number;
+  #running = 0;
+  readonly #queue: Array<() => void> = [];
+
+  constructor(limit: number) {
+    this.#limit = limit;
+  }
+
+  async run<T>(fn: () => Promise<T>): Promise<T> {
+    await this.#acquire();
+    try {
+      return await fn();
+    } finally {
+      this.#release();
+    }
+  }
+
+  #acquire(): Promise<void> {
+    if (this.#running < this.#limit) {
+      this.#running++;
+      return Promise.resolve();
+    }
+    return new Promise<void>((resolve) => {
+      this.#queue.push(resolve);
+    });
+  }
+
+  #release(): void {
+    const next = this.#queue.shift();
+    if (next) {
+      next();
+    } else {
+      this.#running--;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+
 export class HttpError extends Error {
   readonly status: number;
   readonly details: unknown;
@@ -20,10 +66,15 @@ export type RequestOptions = {
   headers?: HeadersInit;
 };
 
+const MAX_CONCURRENT_REQUESTS = 5;
+const MAX_RETRIES = 3;
+const RETRY_BASE_DELAY_MS = 500;
+
 export class CmsHttpClient {
   readonly #apiKey: string;
   readonly #baseUrl: string;
   readonly #pathPrefix: string;
+  readonly #semaphore = new Semaphore(MAX_CONCURRENT_REQUESTS);
 
   constructor(config: ServerConfig) {
     this.#apiKey = config.apiKey;
@@ -32,6 +83,10 @@ export class CmsHttpClient {
   }
 
   async request<T>(options: RequestOptions): Promise<T> {
+    return this.#semaphore.run(() => this.#fetchWithRetry<T>(options));
+  }
+
+  async #fetchWithRetry<T>(options: RequestOptions, attempt = 0): Promise<T> {
     const url = new URL(this.#resolvePath(options.path), `${this.#baseUrl}/`);
 
     for (const [key, value] of Object.entries(options.query ?? {})) {
@@ -54,6 +109,17 @@ export class CmsHttpClient {
     }
 
     const response = await fetch(url, init);
+
+    // Retry on 429 Too Many Requests with exponential backoff
+    if (response.status === 429 && attempt < MAX_RETRIES) {
+      const retryAfterHeader = response.headers.get('Retry-After');
+      const delayMs = retryAfterHeader
+        ? parseInt(retryAfterHeader, 10) * 1000
+        : RETRY_BASE_DELAY_MS * 2 ** attempt;
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return this.#fetchWithRetry<T>(options, attempt + 1);
+    }
+
     return parseJsonResponse<T>(response);
   }
 
