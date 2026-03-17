@@ -12,7 +12,7 @@ describe('healthCheck', () => {
       new Response(JSON.stringify({ name: 'My Portfolio' }), { status: 200 }),
     ));
 
-    const result = await healthCheck('cms_secret_abc', 'https://api.eelzap.com', '/v1');
+    const result = await healthCheck('secret_abc', 'https://api.eelzap.com', '/v1');
     expect(result).toEqual({ ok: true, siteName: 'My Portfolio' });
   });
 
@@ -21,7 +21,7 @@ describe('healthCheck', () => {
       new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 }),
     ));
 
-    const result = await healthCheck('cms_secret_bad', 'https://api.eelzap.com', '/v1');
+    const result = await healthCheck('secret_bad', 'https://api.eelzap.com', '/v1');
     expect(result.ok).toBe(false);
     expect(result.error).toContain('401');
   });
@@ -29,7 +29,7 @@ describe('healthCheck', () => {
   it('returns ok: false on network error', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('ECONNREFUSED')));
 
-    const result = await healthCheck('cms_secret_abc');
+    const result = await healthCheck('secret_abc');
     expect(result.ok).toBe(false);
     expect(result.error).toContain('ECONNREFUSED');
   });
@@ -40,9 +40,9 @@ describe('healthCheck', () => {
     );
     vi.stubGlobal('fetch', mockFetch);
 
-    await healthCheck('cms_secret_test123');
+    await healthCheck('secret_test123');
     const [, init] = mockFetch.mock.calls[0] as [string, RequestInit];
     const headers = new Headers(init?.headers as HeadersInit);
-    expect(headers.get('Authorization')).toBe('Bearer cms_secret_test123');
+    expect(headers.get('Authorization')).toBe('Bearer secret_test123');
   });
 });

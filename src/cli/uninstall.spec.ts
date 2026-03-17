@@ -45,7 +45,7 @@ function makeInstallation(overrides: Partial<typeof mockInstallations[0]> = {}) 
   return {
     tool: { id: 'test-tool', name: 'Test Tool', remove: vi.fn().mockResolvedValue(undefined) },
     scope: { id: 'project', label: 'Project', configPath: '/tmp/test-config.json' },
-    entry: { apiKey: 'cms_secret_old' },
+    entry: { apiKey: 'secret_old' },
     ...overrides,
   };
 }

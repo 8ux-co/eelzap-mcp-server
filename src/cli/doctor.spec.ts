@@ -93,7 +93,7 @@ describe('runDoctor — adapters', () => {
 
   it('shows valid config and healthy status when health check passes', async () => {
     const adapter = ALL_ADAPTERS[0]!;
-    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'cms_secret_valid' });
+    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'secret_valid' });
     vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue(null);
 
     mockHealthCheck.mockResolvedValue({ ok: true, siteName: 'My Site' });
@@ -105,7 +105,7 @@ describe('runDoctor — adapters', () => {
 
   it('shows warning when config is valid but health check fails', async () => {
     const adapter = ALL_ADAPTERS[0]!;
-    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'cms_secret_valid' });
+    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'secret_valid' });
     vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue(null);
 
     mockHealthCheck.mockResolvedValue({ ok: false, error: 'Unauthorized' });
@@ -136,8 +136,8 @@ describe('runDoctor — adapters', () => {
   });
 
   it('shows duplicate key info when same key used across tools', async () => {
-    vi.mocked(ALL_ADAPTERS[0]!.read).mockResolvedValue({ apiKey: 'cms_secret_shared' });
-    vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue({ apiKey: 'cms_secret_shared' });
+    vi.mocked(ALL_ADAPTERS[0]!.read).mockResolvedValue({ apiKey: 'secret_shared' });
+    vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue({ apiKey: 'secret_shared' });
 
     mockHealthCheck.mockResolvedValue({ ok: true });
 
@@ -147,7 +147,7 @@ describe('runDoctor — adapters', () => {
   });
 
   it('shows health check with no site name', async () => {
-    vi.mocked(ALL_ADAPTERS[0]!.read).mockResolvedValue({ apiKey: 'cms_secret_valid' });
+    vi.mocked(ALL_ADAPTERS[0]!.read).mockResolvedValue({ apiKey: 'secret_valid' });
     vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue(null);
 
     mockHealthCheck.mockResolvedValue({ ok: true }); // no siteName
@@ -171,7 +171,7 @@ describe('runDoctor — summary', () => {
 
   it('prints issue count when issues exist', async () => {
     const adapter = ALL_ADAPTERS[0]!;
-    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'cms_secret_valid' });
+    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'secret_valid' });
     vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue(null);
 
     mockHealthCheck.mockResolvedValue({ ok: false, error: 'Connection refused' });
@@ -184,7 +184,7 @@ describe('runDoctor — summary', () => {
 
   it('shows health check site name in output', async () => {
     const adapter = ALL_ADAPTERS[0]!;
-    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'cms_secret_valid' });
+    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'secret_valid' });
     vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue(null);
 
     mockHealthCheck.mockResolvedValue({ ok: true, siteName: 'Doctor Site' });
@@ -196,7 +196,7 @@ describe('runDoctor — summary', () => {
 
   it('prints singular "issue" when exactly 1 issue', async () => {
     const adapter = ALL_ADAPTERS[0]!;
-    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'cms_secret_valid' });
+    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'secret_valid' });
     vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue(null);
 
     mockHealthCheck.mockResolvedValue({ ok: false, error: 'One issue' });

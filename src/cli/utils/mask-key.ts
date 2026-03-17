@@ -1,6 +1,6 @@
 /**
  * Mask an API key for display, showing only the last 4 characters.
- * e.g. "cms_secret_abcdef1234" → "cms_secret_****1234"
+ * e.g. "secret_abcdef1234" → "secret_****1234"
  */
 export function maskKey(apiKey: string): string {
   if (apiKey.length <= 4) {
@@ -14,10 +14,10 @@ export function maskKey(apiKey: string): string {
 
 /**
  * Mask just the secret portion of a key, preserving the readable prefix.
- * e.g. "cms_secret_abcdef1234" → "cms_secret_****1234"
+ * e.g. "secret_abcdef1234" → "secret_****1234"
  */
 export function maskKeyReadable(apiKey: string): string {
-  const prefixMatch = apiKey.match(/^(cms_(?:secret|public)_)/);
+  const prefixMatch = apiKey.match(/^((?:cms_)?(?:secret|public)_)/);
   if (!prefixMatch) {
     return maskKey(apiKey);
   }

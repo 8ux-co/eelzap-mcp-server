@@ -60,7 +60,12 @@ export async function runDoctor(_args: string[]): Promise<void> {
       }
 
       // Validate key format
-      if (!entry.apiKey.startsWith('cms_secret_') && !entry.apiKey.startsWith('cms_public_')) {
+      if (
+        !entry.apiKey.startsWith('secret_') &&
+        !entry.apiKey.startsWith('public_') &&
+        !entry.apiKey.startsWith('cms_secret_') &&
+        !entry.apiKey.startsWith('cms_public_')
+      ) {
         console.log(chalk.red(`  ✗ ${label} — invalid API key format`));
         issues.push({
           label,

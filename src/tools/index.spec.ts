@@ -6,7 +6,7 @@ describe('createAllTools', () => {
   it('registers the full MCP tool surface', () => {
     const tools = createAllTools(
       new CmsHttpClient({
-        apiKey: 'cms_secret_test',
+        apiKey: 'secret_test',
         baseUrl: 'https://cms.example.com',
         pathPrefix: '/v1',
       }),
@@ -34,7 +34,7 @@ describe('createAllTools', () => {
 
     const tools = createAllTools(
       new CmsHttpClient({
-        apiKey: 'cms_secret_test',
+        apiKey: 'secret_test',
         baseUrl: 'https://cms.example.com',
         pathPrefix: '/v1',
       }),
@@ -67,7 +67,7 @@ describe('createAllTools', () => {
 
     const tools = createAllTools(
       new CmsHttpClient({
-        apiKey: 'cms_secret_test',
+        apiKey: 'secret_test',
         baseUrl: 'https://cms.example.com',
         pathPrefix: '/v1',
       }),
@@ -111,7 +111,7 @@ describe('createAllTools', () => {
 
     const tools = createAllTools(
       new CmsHttpClient({
-        apiKey: 'cms_secret_test',
+        apiKey: 'secret_test',
         baseUrl: 'https://cms.example.com',
         pathPrefix: '/v1',
       }),
@@ -186,7 +186,7 @@ describe('createAllTools', () => {
 
     const tools = createAllTools(
       new CmsHttpClient({
-        apiKey: 'cms_secret_test',
+        apiKey: 'secret_test',
         baseUrl: 'https://cms.example.com',
         pathPrefix: '/v1',
       }),

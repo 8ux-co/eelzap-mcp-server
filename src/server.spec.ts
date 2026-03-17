@@ -4,7 +4,7 @@ import { createServer } from './server.js';
 describe('createServer', () => {
   it('returns a server and client', () => {
     const { server, client } = createServer({
-      apiKey: 'cms_secret_test',
+      apiKey: 'secret_test',
       baseUrl: 'https://cms.example.com',
       pathPrefix: '/v1',
     });
@@ -20,7 +20,7 @@ describe('createServer', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const { server } = createServer({
-      apiKey: 'cms_secret_test',
+      apiKey: 'secret_test',
       baseUrl: 'https://cms.example.com',
       pathPrefix: '/v1',
     });

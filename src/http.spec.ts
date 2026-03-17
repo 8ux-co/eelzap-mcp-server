@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CmsHttpClient, parseJsonResponse } from './http.js';
 
 const config = {
-  apiKey: 'cms_secret_test',
+  apiKey: 'secret_test',
   baseUrl: 'https://cms.example.com',
   pathPrefix: '/v1',
 };
@@ -85,7 +85,7 @@ describe('CmsHttpClient', () => {
 
     const [, init] = fetchMock.mock.calls[0] as [URL, RequestInit];
     expect(new Headers(init.headers).get('Authorization')).toBe(
-      'Bearer cms_secret_test',
+      'Bearer secret_test',
     );
   });
 
@@ -120,7 +120,7 @@ describe('CmsHttpClient', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const client = new CmsHttpClient({
-      apiKey: 'cms_secret_test',
+      apiKey: 'secret_test',
       baseUrl: 'http://localhost:5041',
       pathPrefix: '/api/public/v1',
     });

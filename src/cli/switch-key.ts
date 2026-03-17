@@ -23,8 +23,13 @@ function parseFlags(args: string[]): SwitchKeyFlags {
 }
 
 function validateApiKey(key: string): string | true {
-  if (!key.startsWith('cms_secret_') && !key.startsWith('cms_public_')) {
-    return 'API key must start with cms_secret_ or cms_public_';
+  if (
+    !key.startsWith('secret_') &&
+    !key.startsWith('public_') &&
+    !key.startsWith('cms_secret_') &&
+    !key.startsWith('cms_public_')
+  ) {
+    return 'API key must start with secret_ or public_';
   }
   return true;
 }

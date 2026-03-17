@@ -53,7 +53,7 @@ describe('runStatus', () => {
 
   it('prints status for a configured adapter', async () => {
     const adapter = ALL_ADAPTERS[0]!;
-    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'cms_secret_test' });
+    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'secret_test' });
     vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue(null);
 
     mockHealthCheck.mockResolvedValue({ ok: true, siteName: 'My Site' });
@@ -66,7 +66,7 @@ describe('runStatus', () => {
 
   it('prints error status when health check fails', async () => {
     const adapter = ALL_ADAPTERS[0]!;
-    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'cms_secret_bad' });
+    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'secret_bad' });
     vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue(null);
 
     mockHealthCheck.mockResolvedValue({ ok: false, error: 'Connection failed' });
@@ -87,7 +87,7 @@ describe('runStatus', () => {
 
   it('uses default baseUrl and pathPrefix when not set in entry', async () => {
     const adapter = ALL_ADAPTERS[0]!;
-    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'cms_secret_defaults' });
+    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'secret_defaults' });
     vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue(null);
 
     mockHealthCheck.mockResolvedValue({ ok: true });
@@ -95,7 +95,7 @@ describe('runStatus', () => {
     await runStatus([]);
 
     expect(mockHealthCheck).toHaveBeenCalledWith(
-      'cms_secret_defaults',
+      'secret_defaults',
       'https://api.eelzap.com',
       '/v1',
     );
@@ -104,7 +104,7 @@ describe('runStatus', () => {
   it('uses entry baseUrl and pathPrefix when set', async () => {
     const adapter = ALL_ADAPTERS[0]!;
     vi.mocked(adapter.read).mockResolvedValue({
-      apiKey: 'cms_secret_custom',
+      apiKey: 'secret_custom',
       baseUrl: 'http://localhost:5041',
       pathPrefix: '/api/v1',
     });
@@ -115,7 +115,7 @@ describe('runStatus', () => {
     await runStatus([]);
 
     expect(mockHealthCheck).toHaveBeenCalledWith(
-      'cms_secret_custom',
+      'secret_custom',
       'http://localhost:5041',
       '/api/v1',
     );
@@ -133,7 +133,7 @@ describe('runStatus', () => {
 
   it('shows health check status without site name when not returned', async () => {
     const adapter = ALL_ADAPTERS[0]!;
-    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'cms_secret_nosite' });
+    vi.mocked(adapter.read).mockResolvedValue({ apiKey: 'secret_nosite' });
     vi.mocked(ALL_ADAPTERS[1]!.read).mockResolvedValue(null);
 
     mockHealthCheck.mockResolvedValue({ ok: true }); // no siteName

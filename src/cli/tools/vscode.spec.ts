@@ -45,7 +45,7 @@ describe('vscodeAdapter.read', () => {
             type: 'stdio',
             command: 'npx',
             args: ['-y', '@8ux-co/eelzap-mcp-server'],
-            env: { EELZAP_API_KEY: 'cms_secret_vscode' },
+            env: { EELZAP_API_KEY: 'secret_vscode' },
           },
         },
       }),
@@ -53,7 +53,7 @@ describe('vscodeAdapter.read', () => {
     );
 
     const result = await vscodeAdapter.read(configPath);
-    expect(result).toEqual({ apiKey: 'cms_secret_vscode', baseUrl: undefined, pathPrefix: undefined });
+    expect(result).toEqual({ apiKey: 'secret_vscode', baseUrl: undefined, pathPrefix: undefined });
   });
 
   it('reads baseUrl and pathPrefix when present', async () => {
@@ -67,7 +67,7 @@ describe('vscodeAdapter.read', () => {
             command: 'npx',
             args: ['-y', '@8ux-co/eelzap-mcp-server'],
             env: {
-              EELZAP_API_KEY: 'cms_secret_vscode',
+              EELZAP_API_KEY: 'secret_vscode',
               EELZAP_BASE_URL: 'https://custom.example.com',
               EELZAP_PATH_PREFIX: '/v2',
             },
@@ -79,7 +79,7 @@ describe('vscodeAdapter.read', () => {
 
     const result = await vscodeAdapter.read(configPath);
     expect(result).toEqual({
-      apiKey: 'cms_secret_vscode',
+      apiKey: 'secret_vscode',
       baseUrl: 'https://custom.example.com',
       pathPrefix: '/v2',
     });
@@ -96,12 +96,12 @@ describe('vscodeAdapter.read', () => {
 describe('vscodeAdapter.write', () => {
   it('creates a new file with eelzap entry under servers key', async () => {
     const configPath = join(tmpDir, 'mcp.json');
-    await vscodeAdapter.write(configPath, { apiKey: 'cms_secret_vscode' });
+    await vscodeAdapter.write(configPath, { apiKey: 'secret_vscode' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.servers.eelzap.type).toBe('stdio');
     expect(content.servers.eelzap.command).toBe('npx');
-    expect(content.servers.eelzap.env.EELZAP_API_KEY).toBe('cms_secret_vscode');
+    expect(content.servers.eelzap.env.EELZAP_API_KEY).toBe('secret_vscode');
   });
 
   it('merges into existing file without overwriting other entries', async () => {
@@ -109,7 +109,7 @@ describe('vscodeAdapter.write', () => {
     const existing = { servers: { other: { command: 'other-server' } } };
     await writeFile(configPath, JSON.stringify(existing), 'utf-8');
 
-    await vscodeAdapter.write(configPath, { apiKey: 'cms_secret_vscode' });
+    await vscodeAdapter.write(configPath, { apiKey: 'secret_vscode' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.servers['other']).toBeDefined();
@@ -118,7 +118,7 @@ describe('vscodeAdapter.write', () => {
 
   it('creates parent directories if they do not exist', async () => {
     const configPath = join(tmpDir, 'nested', 'dir', 'mcp.json');
-    await vscodeAdapter.write(configPath, { apiKey: 'cms_secret_vscode' });
+    await vscodeAdapter.write(configPath, { apiKey: 'secret_vscode' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.servers.eelzap).toBeDefined();
@@ -127,7 +127,7 @@ describe('vscodeAdapter.write', () => {
   it('includes custom env vars when present', async () => {
     const configPath = join(tmpDir, 'mcp.json');
     await vscodeAdapter.write(configPath, {
-      apiKey: 'cms_secret_vscode',
+      apiKey: 'secret_vscode',
       baseUrl: 'https://custom.example.com',
       pathPrefix: '/v2',
     });
@@ -141,7 +141,7 @@ describe('vscodeAdapter.write', () => {
     const configPath = join(tmpDir, 'mcp.json');
     await writeFile(configPath, 'not valid json{{', 'utf-8');
 
-    await expect(vscodeAdapter.write(configPath, { apiKey: 'cms_secret_vscode' })).rejects.toThrow(
+    await expect(vscodeAdapter.write(configPath, { apiKey: 'secret_vscode' })).rejects.toThrow(
       'Cannot parse',
     );
   });

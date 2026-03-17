@@ -52,7 +52,7 @@ function makeInstallation(overrides: Partial<typeof mockInstallations[0]> = {}) 
   return {
     tool: { id: 'test-tool', name: 'Test Tool', write: vi.fn().mockResolvedValue(undefined) },
     scope: { id: 'project', label: 'Project', configPath: '/tmp/test-config.json' },
-    entry: { apiKey: 'cms_secret_old' },
+    entry: { apiKey: 'secret_old' },
     ...overrides,
   };
 }
@@ -87,11 +87,11 @@ describe('runSwitchKey — single installation', () => {
     mockDetectInstallations.mockResolvedValue([inst as never]);
     mockHealthCheck.mockResolvedValue({ ok: true, siteName: 'My Site' });
 
-    await runSwitchKey(['--api-key', 'cms_secret_new']);
+    await runSwitchKey(['--api-key', 'secret_new']);
 
     expect(inst.tool.write).toHaveBeenCalledWith(
       '/tmp/test-config.json',
-      expect.objectContaining({ apiKey: 'cms_secret_new' }),
+      expect.objectContaining({ apiKey: 'secret_new' }),
     );
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Updated'));
   });
@@ -99,7 +99,7 @@ describe('runSwitchKey — single installation', () => {
   it('uses password prompt when no --api-key flag', async () => {
     const inst = makeInstallation();
     mockDetectInstallations.mockResolvedValue([inst as never]);
-    mockPassword.mockResolvedValueOnce('cms_secret_prompted');
+    mockPassword.mockResolvedValueOnce('secret_prompted');
     mockHealthCheck.mockResolvedValue({ ok: true });
 
     await runSwitchKey([]);
@@ -107,7 +107,7 @@ describe('runSwitchKey — single installation', () => {
     expect(mockPassword).toHaveBeenCalled();
     expect(inst.tool.write).toHaveBeenCalledWith(
       '/tmp/test-config.json',
-      expect.objectContaining({ apiKey: 'cms_secret_prompted' }),
+      expect.objectContaining({ apiKey: 'secret_prompted' }),
     );
   });
 
@@ -131,7 +131,7 @@ describe('runSwitchKey — multiple installations', () => {
     mockSelect.mockResolvedValueOnce('/tmp/inst1.json'); // select specific installation
     mockHealthCheck.mockResolvedValue({ ok: true });
 
-    await runSwitchKey(['--api-key', 'cms_secret_multi']);
+    await runSwitchKey(['--api-key', 'secret_multi']);
 
     expect(mockSelect).toHaveBeenCalled();
     expect(inst1.tool.write).toHaveBeenCalled();
@@ -148,7 +148,7 @@ describe('runSwitchKey — multiple installations', () => {
     mockSelect.mockResolvedValueOnce('all');
     mockHealthCheck.mockResolvedValue({ ok: true });
 
-    await runSwitchKey(['--api-key', 'cms_secret_all']);
+    await runSwitchKey(['--api-key', 'secret_all']);
 
     expect(inst1.tool.write).toHaveBeenCalled();
     expect(inst2.tool.write).toHaveBeenCalled();
@@ -161,7 +161,7 @@ describe('runSwitchKey — health check', () => {
     mockDetectInstallations.mockResolvedValue([inst as never]);
     mockHealthCheck.mockResolvedValue({ ok: false, error: 'Unauthorized' });
 
-    await runSwitchKey(['--api-key', 'cms_secret_bad']);
+    await runSwitchKey(['--api-key', 'secret_bad']);
 
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Could not verify'));
     expect(inst.tool.write).toHaveBeenCalled();
@@ -174,7 +174,7 @@ describe('runSwitchKey — health check', () => {
     mockHealthCheck.mockResolvedValue({ ok: true });
 
     // Should not throw
-    await runSwitchKey(['--api-key', 'cms_secret_write_fail']);
+    await runSwitchKey(['--api-key', 'secret_write_fail']);
     expect(console.error).toHaveBeenCalledWith(expect.stringContaining('write failed'));
   });
 });
@@ -189,7 +189,7 @@ describe('runSwitchKey — --tool flag', () => {
     mockDetectInstallations.mockResolvedValue([inst1 as never, inst2 as never]);
     mockHealthCheck.mockResolvedValue({ ok: true });
 
-    await runSwitchKey(['--tool', 'test-tool', '--api-key', 'cms_secret_filtered']);
+    await runSwitchKey(['--tool', 'test-tool', '--api-key', 'secret_filtered']);
 
     expect(inst1.tool.write).toHaveBeenCalled();
     expect(inst2.tool.write).not.toHaveBeenCalled();
@@ -200,7 +200,7 @@ describe('runSwitchKey — --tool flag', () => {
     mockDetectInstallations.mockResolvedValue([inst as never]);
     mockHealthCheck.mockResolvedValue({ ok: true });
 
-    await runSwitchKey(['--tool=test-tool', '--api-key=cms_secret_eq']);
+    await runSwitchKey(['--tool=test-tool', '--api-key=secret_eq']);
 
     expect(inst.tool.write).toHaveBeenCalled();
   });

@@ -74,30 +74,30 @@ describe('runInstall — flag parsing', () => {
   it('uses --tool flag to skip select prompt and --api-key to skip password prompt', async () => {
     mockHealthCheck.mockResolvedValue({ ok: true, siteName: 'My Site' });
 
-    await runInstall(['--tool', 'test-tool', '--api-key', 'cms_secret_flagtest']);
+    await runInstall(['--tool', 'test-tool', '--api-key', 'secret_flagtest']);
 
     expect(mockSelect).not.toHaveBeenCalled();
     expect(mockPassword).not.toHaveBeenCalled();
     expect(singleScopeAdapter.write).toHaveBeenCalledWith(
       '/tmp/test-config.json',
-      expect.objectContaining({ apiKey: 'cms_secret_flagtest' }),
+      expect.objectContaining({ apiKey: 'secret_flagtest' }),
     );
   });
 
   it('uses --tool= syntax to parse flags', async () => {
     mockHealthCheck.mockResolvedValue({ ok: true });
 
-    await runInstall(['--tool=test-tool', '--api-key=cms_secret_eq']);
+    await runInstall(['--tool=test-tool', '--api-key=secret_eq']);
 
     expect(singleScopeAdapter.write).toHaveBeenCalledWith(
       '/tmp/test-config.json',
-      expect.objectContaining({ apiKey: 'cms_secret_eq' }),
+      expect.objectContaining({ apiKey: 'secret_eq' }),
     );
   });
 
   it('exits with error for unknown --tool', async () => {
     await expect(
-      runInstall(['--tool', 'nonexistent-tool', '--api-key', 'cms_secret_x']),
+      runInstall(['--tool', 'nonexistent-tool', '--api-key', 'secret_x']),
     ).rejects.toThrow('process.exit called');
     expect(console.error).toHaveBeenCalled();
   });
@@ -113,7 +113,7 @@ describe('runInstall — flag parsing', () => {
 describe('runInstall — interactive prompts', () => {
   it('uses prompts when no flags are provided', async () => {
     mockSelect.mockResolvedValueOnce('test-tool');
-    mockPassword.mockResolvedValueOnce('cms_secret_interactive');
+    mockPassword.mockResolvedValueOnce('secret_interactive');
     // mockConfirm defaults to false (no custom base URL) from beforeEach
     mockHealthCheck.mockResolvedValue({ ok: true, siteName: 'Interactive Site' });
 
@@ -127,7 +127,7 @@ describe('runInstall — interactive prompts', () => {
   it('warns when using a public key', async () => {
     mockHealthCheck.mockResolvedValue({ ok: true });
 
-    await runInstall(['--tool', 'test-tool', '--api-key', 'cms_public_readonlykey']);
+    await runInstall(['--tool', 'test-tool', '--api-key', 'public_readonlykey']);
 
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining('public key'));
   });
@@ -137,7 +137,7 @@ describe('runInstall — interactive prompts', () => {
 
     await runInstall([
       '--tool', 'test-tool',
-      '--api-key', 'cms_secret_custom',
+      '--api-key', 'secret_custom',
       '--base-url', 'http://localhost:5041',
       '--path-prefix', '/api/v1',
     ]);
@@ -145,7 +145,7 @@ describe('runInstall — interactive prompts', () => {
     expect(singleScopeAdapter.write).toHaveBeenCalledWith(
       '/tmp/test-config.json',
       expect.objectContaining({
-        apiKey: 'cms_secret_custom',
+        apiKey: 'secret_custom',
         baseUrl: 'http://localhost:5041',
         pathPrefix: '/api/v1',
       }),
@@ -157,7 +157,7 @@ describe('runInstall — interactive prompts', () => {
 
     await runInstall([
       '--tool', 'test-tool',
-      '--api-key', 'cms_secret_default',
+      '--api-key', 'secret_default',
       '--base-url', 'https://api.eelzap.com',
     ]);
 
@@ -171,7 +171,7 @@ describe('runInstall — health check', () => {
     mockHealthCheck.mockResolvedValue({ ok: false, error: 'Unauthorized' });
     mockConfirm.mockResolvedValue(true); // override default to allow proceeding
 
-    await runInstall(['--tool', 'test-tool', '--api-key', 'cms_secret_bad']);
+    await runInstall(['--tool', 'test-tool', '--api-key', 'secret_bad']);
 
     expect(mockConfirm).toHaveBeenCalled();
     expect(singleScopeAdapter.write).toHaveBeenCalled();
@@ -182,14 +182,14 @@ describe('runInstall — health check', () => {
     mockConfirm.mockResolvedValueOnce(false); // decline
 
     await expect(
-      runInstall(['--tool', 'test-tool', '--api-key', 'cms_secret_bad']),
+      runInstall(['--tool', 'test-tool', '--api-key', 'secret_bad']),
     ).rejects.toThrow('process.exit called');
   });
 
   it('logs success message including site name when health check succeeds', async () => {
     mockHealthCheck.mockResolvedValue({ ok: true, siteName: 'Awesome Site' });
 
-    await runInstall(['--tool', 'test-tool', '--api-key', 'cms_secret_ok']);
+    await runInstall(['--tool', 'test-tool', '--api-key', 'secret_ok']);
 
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Awesome Site'));
   });
@@ -197,7 +197,7 @@ describe('runInstall — health check', () => {
   it('logs success message without site name when siteName is not returned', async () => {
     mockHealthCheck.mockResolvedValue({ ok: true });
 
-    await runInstall(['--tool', 'test-tool', '--api-key', 'cms_secret_ok']);
+    await runInstall(['--tool', 'test-tool', '--api-key', 'secret_ok']);
 
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining('API key verified'));
   });
@@ -206,7 +206,7 @@ describe('runInstall — health check', () => {
 describe('runInstall — scope selection', () => {
   it('exits with error when invalid --scope is provided', async () => {
     await expect(
-      runInstall(['--tool', 'multi-scope-tool', '--api-key', 'cms_secret_x', '--scope', 'bad-scope']),
+      runInstall(['--tool', 'multi-scope-tool', '--api-key', 'secret_x', '--scope', 'bad-scope']),
     ).rejects.toThrow('process.exit called');
     expect(console.error).toHaveBeenCalled();
   });
@@ -215,7 +215,7 @@ describe('runInstall — scope selection', () => {
     mockSelect.mockResolvedValueOnce('global');
     mockHealthCheck.mockResolvedValue({ ok: true });
 
-    await runInstall(['--tool', 'multi-scope-tool', '--api-key', 'cms_secret_multi']);
+    await runInstall(['--tool', 'multi-scope-tool', '--api-key', 'secret_multi']);
 
     expect(mockSelect).toHaveBeenCalled();
     expect(multiScopeAdapter.write).toHaveBeenCalledWith('/tmp/multi-global.json', expect.any(Object));
@@ -227,7 +227,7 @@ describe('runInstall — scope selection', () => {
     mockInput.mockResolvedValueOnce('/v2'); // path prefix
     mockHealthCheck.mockResolvedValue({ ok: true });
 
-    await runInstall(['--tool', 'test-tool', '--api-key', 'cms_secret_custom_interactive']);
+    await runInstall(['--tool', 'test-tool', '--api-key', 'secret_custom_interactive']);
 
     expect(singleScopeAdapter.write).toHaveBeenCalledWith(
       '/tmp/test-config.json',
@@ -241,7 +241,7 @@ describe('runInstall — scope selection', () => {
   it('selects scope using --scope flag with --scope= syntax', async () => {
     mockHealthCheck.mockResolvedValue({ ok: true });
 
-    await runInstall(['--tool=multi-scope-tool', '--api-key=cms_secret_scoped', '--scope=project']);
+    await runInstall(['--tool=multi-scope-tool', '--api-key=secret_scoped', '--scope=project']);
 
     expect(multiScopeAdapter.write).toHaveBeenCalledWith('/tmp/multi-project.json', expect.any(Object));
   });
@@ -253,7 +253,7 @@ describe('runInstall — write error', () => {
     singleScopeAdapter.write.mockRejectedValue(new Error('disk full'));
 
     await expect(
-      runInstall(['--tool', 'test-tool', '--api-key', 'cms_secret_fail']),
+      runInstall(['--tool', 'test-tool', '--api-key', 'secret_fail']),
     ).rejects.toThrow('process.exit called');
     expect(console.error).toHaveBeenCalledWith(expect.stringContaining('disk full'));
   });

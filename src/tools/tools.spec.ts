@@ -24,7 +24,7 @@ function makeClient(mockResponse: unknown = { ok: true }) {
   );
   vi.stubGlobal('fetch', fetchMock);
   return new CmsHttpClient({
-    apiKey: 'cms_secret_test',
+    apiKey: 'secret_test',
     baseUrl: 'https://cms.example.com',
     pathPrefix: '/v1',
   });
@@ -860,7 +860,7 @@ describe('media upload_media_from_url — SSRF and edge cases', () => {
     vi.spyOn({ lookup }, 'lookup').mockResolvedValue([{ address: '93.184.216.34', family: 4 }] as never);
 
     const client = new CmsHttpClient({
-      apiKey: 'cms_secret_test',
+      apiKey: 'secret_test',
       baseUrl: 'https://cms.example.com',
       pathPrefix: '/v1',
     });

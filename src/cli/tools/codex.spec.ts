@@ -51,14 +51,14 @@ describe('codexAdapter.read', () => {
           command: 'npx',
           args: ['-y', '@8ux-co/eelzap-mcp-server'],
           enabled: true,
-          env: { EELZAP_API_KEY: 'cms_secret_fromtoml' },
+          env: { EELZAP_API_KEY: 'secret_fromtoml' },
         },
       },
     });
     await writeFile(configPath, toml, 'utf-8');
 
     const result = await codexAdapter.read(configPath);
-    expect(result).toEqual({ apiKey: 'cms_secret_fromtoml' });
+    expect(result).toEqual({ apiKey: 'secret_fromtoml' });
   });
 
   it('reads baseUrl and pathPrefix from the TOML env block when present', async () => {
@@ -70,7 +70,7 @@ describe('codexAdapter.read', () => {
           args: ['-y', '@8ux-co/eelzap-mcp-server'],
           enabled: true,
           env: {
-            EELZAP_API_KEY: 'cms_secret_test',
+            EELZAP_API_KEY: 'secret_test',
             EELZAP_BASE_URL: 'https://custom.example.com',
             EELZAP_PATH_PREFIX: '/v2',
           },
@@ -81,7 +81,7 @@ describe('codexAdapter.read', () => {
 
     const result = await codexAdapter.read(configPath);
     expect(result).toEqual({
-      apiKey: 'cms_secret_test',
+      apiKey: 'secret_test',
       baseUrl: 'https://custom.example.com',
       pathPrefix: '/v2',
     });
@@ -91,7 +91,7 @@ describe('codexAdapter.read', () => {
 describe('codexAdapter.write', () => {
   it('creates a new TOML file with the eelzap entry and env block', async () => {
     const configPath = join(tmpDir, 'config.toml');
-    await codexAdapter.write(configPath, { apiKey: 'cms_secret_test' });
+    await codexAdapter.write(configPath, { apiKey: 'secret_test' });
 
     const text = await readFile(configPath, 'utf-8');
     const parsed = TOML.parse(text) as Record<string, unknown>;
@@ -101,13 +101,13 @@ describe('codexAdapter.write', () => {
     expect(eelzap['command']).toBe('npx');
     expect(eelzap['enabled']).toBe(true);
     const env = eelzap['env'] as Record<string, string>;
-    expect(env['EELZAP_API_KEY']).toBe('cms_secret_test');
+    expect(env['EELZAP_API_KEY']).toBe('secret_test');
   });
 
   it('writes optional baseUrl and pathPrefix into the env block', async () => {
     const configPath = join(tmpDir, 'config.toml');
     await codexAdapter.write(configPath, {
-      apiKey: 'cms_secret_test',
+      apiKey: 'secret_test',
       baseUrl: 'https://custom.example.com',
       pathPrefix: '/v2',
     });
@@ -117,7 +117,7 @@ describe('codexAdapter.write', () => {
     const servers = parsed['mcp_servers'] as Record<string, unknown>;
     const eelzap = servers['eelzap'] as Record<string, unknown>;
     const env = eelzap['env'] as Record<string, string>;
-    expect(env['EELZAP_API_KEY']).toBe('cms_secret_test');
+    expect(env['EELZAP_API_KEY']).toBe('secret_test');
     expect(env['EELZAP_BASE_URL']).toBe('https://custom.example.com');
     expect(env['EELZAP_PATH_PREFIX']).toBe('/v2');
   });
@@ -127,7 +127,7 @@ describe('codexAdapter.write', () => {
     const existing = TOML.stringify({ mcp_servers: { other: { command: 'other', enabled: true } } });
     await writeFile(configPath, existing, 'utf-8');
 
-    await codexAdapter.write(configPath, { apiKey: 'cms_secret_test' });
+    await codexAdapter.write(configPath, { apiKey: 'secret_test' });
 
     const text = await readFile(configPath, 'utf-8');
     const parsed = TOML.parse(text) as Record<string, unknown>;
@@ -146,7 +146,7 @@ describe('codexAdapter.remove', () => {
           command: 'npx',
           args: ['-y', '@8ux-co/eelzap-mcp-server'],
           enabled: true,
-          env: { EELZAP_API_KEY: 'cms_secret_test' },
+          env: { EELZAP_API_KEY: 'secret_test' },
         },
         other: { command: 'other', enabled: true },
       },

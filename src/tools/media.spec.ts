@@ -21,7 +21,7 @@ afterEach(() => {
 
 function makeClient() {
   return new CmsHttpClient({
-    apiKey: 'cms_secret_test',
+    apiKey: 'secret_test',
     baseUrl: 'https://cms.example.com',
     pathPrefix: '/v1',
   });

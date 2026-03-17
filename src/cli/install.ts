@@ -34,8 +34,13 @@ function parseFlags(args: string[]): InstallFlags {
 }
 
 function validateApiKey(key: string): string | true {
-  if (!key.startsWith('cms_secret_') && !key.startsWith('cms_public_')) {
-    return 'API key must start with cms_secret_ or cms_public_';
+  if (
+    !key.startsWith('secret_') &&
+    !key.startsWith('public_') &&
+    !key.startsWith('cms_secret_') &&
+    !key.startsWith('cms_public_')
+  ) {
+    return 'API key must start with secret_ or public_';
   }
   return true;
 }
@@ -92,12 +97,12 @@ export async function runInstall(args: string[]): Promise<void> {
     apiKey = flags.apiKey;
   } else {
     apiKey = await password({
-      message: 'Enter your Eel Zap API key (cms_secret_... or cms_public_...):',
+      message: 'Enter your Eel Zap API key (secret_... or public_...):',
       validate: validateApiKey,
     });
   }
 
-  if (apiKey.startsWith('cms_public_')) {
+  if (apiKey.startsWith('public_') || apiKey.startsWith('cms_public_')) {
     console.log(
       chalk.yellow(
         '⚠  You entered a public key (read-only). Most write operations will fail. Use a secret key for full access.',

@@ -48,7 +48,7 @@ describe('cursorAdapter.read', () => {
           eelzap: {
             command: 'npx',
             args: ['-y', '@8ux-co/eelzap-mcp-server'],
-            env: { EELZAP_API_KEY: 'cms_secret_cursor' },
+            env: { EELZAP_API_KEY: 'secret_cursor' },
           },
         },
       }),
@@ -56,7 +56,7 @@ describe('cursorAdapter.read', () => {
     );
 
     const result = await cursorAdapter.read(configPath);
-    expect(result).toEqual({ apiKey: 'cms_secret_cursor', baseUrl: undefined, pathPrefix: undefined });
+    expect(result).toEqual({ apiKey: 'secret_cursor', baseUrl: undefined, pathPrefix: undefined });
   });
 
   it('reads baseUrl and pathPrefix when present', async () => {
@@ -69,7 +69,7 @@ describe('cursorAdapter.read', () => {
             command: 'npx',
             args: ['-y', '@8ux-co/eelzap-mcp-server'],
             env: {
-              EELZAP_API_KEY: 'cms_secret_cursor',
+              EELZAP_API_KEY: 'secret_cursor',
               EELZAP_BASE_URL: 'http://localhost:5041',
               EELZAP_PATH_PREFIX: '/v2',
             },
@@ -81,7 +81,7 @@ describe('cursorAdapter.read', () => {
 
     const result = await cursorAdapter.read(configPath);
     expect(result).toEqual({
-      apiKey: 'cms_secret_cursor',
+      apiKey: 'secret_cursor',
       baseUrl: 'http://localhost:5041',
       pathPrefix: '/v2',
     });
@@ -98,11 +98,11 @@ describe('cursorAdapter.read', () => {
 describe('cursorAdapter.write', () => {
   it('creates a new file with eelzap entry', async () => {
     const configPath = join(tmpDir, 'mcp.json');
-    await cursorAdapter.write(configPath, { apiKey: 'cms_secret_cursor' });
+    await cursorAdapter.write(configPath, { apiKey: 'secret_cursor' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.mcpServers.eelzap.command).toBe('npx');
-    expect(content.mcpServers.eelzap.env.EELZAP_API_KEY).toBe('cms_secret_cursor');
+    expect(content.mcpServers.eelzap.env.EELZAP_API_KEY).toBe('secret_cursor');
   });
 
   it('merges into existing file without overwriting other entries', async () => {
@@ -110,7 +110,7 @@ describe('cursorAdapter.write', () => {
     const existing = { mcpServers: { other: { command: 'other-server' } } };
     await writeFile(configPath, JSON.stringify(existing), 'utf-8');
 
-    await cursorAdapter.write(configPath, { apiKey: 'cms_secret_cursor' });
+    await cursorAdapter.write(configPath, { apiKey: 'secret_cursor' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.mcpServers['other']).toBeDefined();
@@ -119,7 +119,7 @@ describe('cursorAdapter.write', () => {
 
   it('creates parent directories if they do not exist', async () => {
     const configPath = join(tmpDir, 'nested', 'dir', 'mcp.json');
-    await cursorAdapter.write(configPath, { apiKey: 'cms_secret_cursor' });
+    await cursorAdapter.write(configPath, { apiKey: 'secret_cursor' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.mcpServers.eelzap).toBeDefined();
@@ -128,7 +128,7 @@ describe('cursorAdapter.write', () => {
   it('includes custom env vars when present', async () => {
     const configPath = join(tmpDir, 'mcp.json');
     await cursorAdapter.write(configPath, {
-      apiKey: 'cms_secret_cursor',
+      apiKey: 'secret_cursor',
       baseUrl: 'http://localhost:5041',
       pathPrefix: '/api/v1',
     });
@@ -142,7 +142,7 @@ describe('cursorAdapter.write', () => {
     const configPath = join(tmpDir, 'mcp.json');
     await writeFile(configPath, 'not valid json{{', 'utf-8');
 
-    await expect(cursorAdapter.write(configPath, { apiKey: 'cms_secret_cursor' })).rejects.toThrow(
+    await expect(cursorAdapter.write(configPath, { apiKey: 'secret_cursor' })).rejects.toThrow(
       'Cannot parse',
     );
   });

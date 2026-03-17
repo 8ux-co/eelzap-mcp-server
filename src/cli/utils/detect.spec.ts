@@ -65,7 +65,7 @@ describe('detectInstallations', () => {
     // Mock one adapter to return an entry
     const targetAdapter = ALL_ADAPTERS.find((a) => a.id === 'claude-code')!;
     vi.spyOn(targetAdapter, 'read').mockResolvedValue({
-      apiKey: 'cms_secret_found',
+      apiKey: 'secret_found',
     });
 
     // Mock all others to return null
@@ -78,7 +78,7 @@ describe('detectInstallations', () => {
     const installations = await detectInstallations();
     const found = installations.filter((i) => i.tool.id === 'claude-code');
     expect(found.length).toBeGreaterThan(0);
-    expect(found[0]?.entry.apiKey).toBe('cms_secret_found');
+    expect(found[0]?.entry.apiKey).toBe('secret_found');
   });
 
   it('handles errors from adapter reads gracefully', async () => {
@@ -95,9 +95,9 @@ describe('detectInstallations', () => {
     const claudeCode = ALL_ADAPTERS.find((a) => a.id === 'claude-code')!;
     const cursor = ALL_ADAPTERS.find((a) => a.id === 'cursor')!;
 
-    vi.spyOn(claudeCode, 'read').mockResolvedValue({ apiKey: 'cms_secret_cc' });
+    vi.spyOn(claudeCode, 'read').mockResolvedValue({ apiKey: 'secret_cc' });
     vi.spyOn(cursor, 'read').mockImplementation(async (configPath: string) => {
-      if (configPath.includes('global')) return { apiKey: 'cms_secret_cursor' };
+      if (configPath.includes('global')) return { apiKey: 'secret_cursor' };
       return null;
     });
 

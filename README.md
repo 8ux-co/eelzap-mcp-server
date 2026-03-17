@@ -14,7 +14,7 @@ npx @8ux-co/eelzap-mcp-server install
 **With Claude Code:**
 ```bash
 claude mcp add --transport stdio eelzap \
-  --env EELZAP_API_KEY=cms_secret_your_key_here \
+  --env EELZAP_API_KEY=secret_your_key_here \
   -- npx -y @8ux-co/eelzap-mcp-server
 ```
 
@@ -40,7 +40,7 @@ Create `.mcp.json` in your project root:
       "command": "npx",
       "args": ["-y", "@8ux-co/eelzap-mcp-server"],
       "env": {
-        "EELZAP_API_KEY": "cms_secret_your_key_here"
+        "EELZAP_API_KEY": "secret_your_key_here"
       }
     }
   }
@@ -58,7 +58,7 @@ Add to the `mcpServers` section in `~/.claude.json`:
       "command": "npx",
       "args": ["-y", "@8ux-co/eelzap-mcp-server"],
       "env": {
-        "EELZAP_API_KEY": "cms_secret_your_key_here"
+        "EELZAP_API_KEY": "secret_your_key_here"
       }
     }
   }
@@ -68,7 +68,7 @@ Add to the `mcpServers` section in `~/.claude.json`:
 **Using `claude mcp add`:**
 ```bash
 claude mcp add --transport stdio eelzap \
-  --env EELZAP_API_KEY=cms_secret_your_key_here \
+  --env EELZAP_API_KEY=secret_your_key_here \
   -- npx -y @8ux-co/eelzap-mcp-server
 ```
 
@@ -89,7 +89,7 @@ Create `.cursor/mcp.json` in your project root:
       "command": "npx",
       "args": ["-y", "@8ux-co/eelzap-mcp-server"],
       "env": {
-        "EELZAP_API_KEY": "cms_secret_your_key_here"
+        "EELZAP_API_KEY": "secret_your_key_here"
       }
     }
   }
@@ -118,7 +118,7 @@ Create `.vscode/mcp.json` in your project root:
       "command": "npx",
       "args": ["-y", "@8ux-co/eelzap-mcp-server"],
       "env": {
-        "EELZAP_API_KEY": "cms_secret_your_key_here"
+        "EELZAP_API_KEY": "secret_your_key_here"
       }
     }
   }
@@ -144,7 +144,7 @@ args = ["-y", "@8ux-co/eelzap-mcp-server"]
 enabled = true
 
 [mcp_servers.eelzap.env]
-EELZAP_API_KEY = "cms_secret_your_key_here"
+EELZAP_API_KEY = "secret_your_key_here"
 ```
 
 ### Claude Desktop
@@ -169,7 +169,7 @@ Add to the `mcpServers` section:
       "command": "npx",
       "args": ["-y", "@8ux-co/eelzap-mcp-server"],
       "env": {
-        "EELZAP_API_KEY": "cms_secret_your_key_here"
+        "EELZAP_API_KEY": "secret_your_key_here"
       }
     }
   }
@@ -195,7 +195,7 @@ Restart Claude Desktop after saving.
 npx @8ux-co/eelzap-mcp-server install \
   --tool claude-code \
   --scope project \
-  --api-key cms_secret_xxx
+  --api-key secret_xxx
 
 # Update the API key for a specific tool:
 npx @8ux-co/eelzap-mcp-server switch-key --tool cursor
@@ -213,7 +213,7 @@ npx @8ux-co/eelzap-mcp-server doctor
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `EELZAP_API_KEY` | Yes | — | Your API key. Starts with `cms_secret_` (full access) or `cms_public_` (read-only). Get it from your Eel Zap dashboard under Settings > API Keys. |
+| `EELZAP_API_KEY` | Yes | — | Your API key. Starts with `secret_` (full access) or `public_` (read-only). Get it from your Eel Zap dashboard under Settings > API Keys. |
 | `EELZAP_BASE_URL` | No | `https://api.eelzap.com` | API base URL. Override for self-hosted or local development. |
 | `EELZAP_PATH_PREFIX` | No | `/v1` | Path prefix. Set to `/api/public/v1` for local dev against the Next.js dev server. |
 
@@ -221,8 +221,8 @@ npx @8ux-co/eelzap-mcp-server doctor
 
 | Key prefix | Access level | Use case |
 |------------|-------------|----------|
-| `cms_secret_` | Full read/write | Creating content, managing collections, uploading media, publishing |
-| `cms_public_` | Read-only | Querying published content via the delivery API only |
+| `secret_` | Full read/write | Creating content, managing collections, uploading media, publishing |
+| `public_` | Read-only | Querying published content via the delivery API only |
 
 For MCP server usage, you almost always want a **secret key** since the whole point is to manage content through your AI assistant.
 
@@ -231,7 +231,7 @@ For MCP server usage, you almost always want a **secret key** since the whole po
 If you're running the CMS locally:
 ```json
 "env": {
-  "EELZAP_API_KEY": "cms_secret_your_key",
+  "EELZAP_API_KEY": "secret_your_key",
   "EELZAP_BASE_URL": "http://localhost:5041",
   "EELZAP_PATH_PREFIX": "/api/public/v1"
 }
@@ -391,7 +391,7 @@ The server can't reach the API. Check:
 Your API key is invalid or expired. Generate a new one from the Eel Zap dashboard (Settings > API Keys) and run `eelzap-mcp switch-key`.
 
 ### "403 Forbidden"
-You're using a public key (`cms_public_`) for a write operation. Switch to a secret key (`cms_secret_`).
+You're using a public key (`public_`) for a write operation. Switch to a secret key (`secret_`).
 
 ### Server not appearing in your tool
 - **Claude Code:** Restart Claude Code or run `/mcp` to check server status
@@ -415,10 +415,10 @@ npm test
 
 Run locally during development:
 ```bash
-EELZAP_API_KEY=cms_secret_... npx tsx src/index.ts
+EELZAP_API_KEY=secret_... npx tsx src/index.ts
 ```
 
 Test with MCP Inspector:
 ```bash
-EELZAP_API_KEY=cms_secret_... npx @modelcontextprotocol/inspector npx tsx src/index.ts
+EELZAP_API_KEY=secret_... npx @modelcontextprotocol/inspector npx tsx src/index.ts
 ```

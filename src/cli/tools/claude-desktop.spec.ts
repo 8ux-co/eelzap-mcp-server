@@ -60,7 +60,7 @@ describe('claudeDesktopAdapter.read', () => {
           eelzap: {
             command: 'npx',
             args: ['-y', '@8ux-co/eelzap-mcp-server'],
-            env: { EELZAP_API_KEY: 'cms_secret_desktop' },
+            env: { EELZAP_API_KEY: 'secret_desktop' },
           },
         },
       }),
@@ -68,7 +68,7 @@ describe('claudeDesktopAdapter.read', () => {
     );
 
     const result = await adapter.read(configPath);
-    expect(result).toEqual({ apiKey: 'cms_secret_desktop', baseUrl: undefined, pathPrefix: undefined });
+    expect(result).toEqual({ apiKey: 'secret_desktop', baseUrl: undefined, pathPrefix: undefined });
   });
 
   it('reads baseUrl and pathPrefix when present', async () => {
@@ -82,7 +82,7 @@ describe('claudeDesktopAdapter.read', () => {
             command: 'npx',
             args: ['-y', '@8ux-co/eelzap-mcp-server'],
             env: {
-              EELZAP_API_KEY: 'cms_secret_desktop',
+              EELZAP_API_KEY: 'secret_desktop',
               EELZAP_BASE_URL: 'https://custom.example.com',
               EELZAP_PATH_PREFIX: '/v2',
             },
@@ -94,7 +94,7 @@ describe('claudeDesktopAdapter.read', () => {
 
     const result = await adapter.read(configPath);
     expect(result).toEqual({
-      apiKey: 'cms_secret_desktop',
+      apiKey: 'secret_desktop',
       baseUrl: 'https://custom.example.com',
       pathPrefix: '/v2',
     });
@@ -113,11 +113,11 @@ describe('claudeDesktopAdapter.write', () => {
   it('creates a new file with eelzap entry', async () => {
     const adapter = await loadAdapter();
     const configPath = join(tmpDir, 'config.json');
-    await adapter.write(configPath, { apiKey: 'cms_secret_desktop' });
+    await adapter.write(configPath, { apiKey: 'secret_desktop' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.mcpServers.eelzap.command).toBe('npx');
-    expect(content.mcpServers.eelzap.env.EELZAP_API_KEY).toBe('cms_secret_desktop');
+    expect(content.mcpServers.eelzap.env.EELZAP_API_KEY).toBe('secret_desktop');
   });
 
   it('merges into existing file without overwriting other entries', async () => {
@@ -126,7 +126,7 @@ describe('claudeDesktopAdapter.write', () => {
     const existing = { mcpServers: { other: { command: 'other-server' } } };
     await writeFile(configPath, JSON.stringify(existing), 'utf-8');
 
-    await adapter.write(configPath, { apiKey: 'cms_secret_desktop' });
+    await adapter.write(configPath, { apiKey: 'secret_desktop' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.mcpServers['other']).toBeDefined();
@@ -136,7 +136,7 @@ describe('claudeDesktopAdapter.write', () => {
   it('creates parent directories if they do not exist', async () => {
     const adapter = await loadAdapter();
     const configPath = join(tmpDir, 'nested', 'config.json');
-    await adapter.write(configPath, { apiKey: 'cms_secret_desktop' });
+    await adapter.write(configPath, { apiKey: 'secret_desktop' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.mcpServers.eelzap).toBeDefined();
@@ -146,7 +146,7 @@ describe('claudeDesktopAdapter.write', () => {
     const adapter = await loadAdapter();
     const configPath = join(tmpDir, 'config.json');
     await adapter.write(configPath, {
-      apiKey: 'cms_secret_desktop',
+      apiKey: 'secret_desktop',
       baseUrl: 'https://custom.example.com',
       pathPrefix: '/v2',
     });
@@ -161,7 +161,7 @@ describe('claudeDesktopAdapter.write', () => {
     const configPath = join(tmpDir, 'config.json');
     await writeFile(configPath, 'not valid json{{', 'utf-8');
 
-    await expect(adapter.write(configPath, { apiKey: 'cms_secret_desktop' })).rejects.toThrow(
+    await expect(adapter.write(configPath, { apiKey: 'secret_desktop' })).rejects.toThrow(
       'Cannot parse',
     );
   });

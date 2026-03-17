@@ -38,7 +38,7 @@ describe('claudeCodeAdapter.read', () => {
             type: 'stdio',
             command: 'npx',
             args: ['-y', '@8ux-co/eelzap-mcp-server'],
-            env: { EELZAP_API_KEY: 'cms_secret_test' },
+            env: { EELZAP_API_KEY: 'secret_test' },
           },
         },
       }),
@@ -46,18 +46,18 @@ describe('claudeCodeAdapter.read', () => {
     );
 
     const result = await claudeCodeAdapter.read(configPath);
-    expect(result).toEqual({ apiKey: 'cms_secret_test', baseUrl: undefined, pathPrefix: undefined });
+    expect(result).toEqual({ apiKey: 'secret_test', baseUrl: undefined, pathPrefix: undefined });
   });
 });
 
 describe('claudeCodeAdapter.write', () => {
   it('creates a new file with the eelzap entry', async () => {
     const configPath = join(tmpDir, '.mcp.json');
-    await claudeCodeAdapter.write(configPath, { apiKey: 'cms_secret_test' });
+    await claudeCodeAdapter.write(configPath, { apiKey: 'secret_test' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.mcpServers.eelzap.type).toBe('stdio');
-    expect(content.mcpServers.eelzap.env.EELZAP_API_KEY).toBe('cms_secret_test');
+    expect(content.mcpServers.eelzap.env.EELZAP_API_KEY).toBe('secret_test');
   });
 
   it('merges into an existing file without overwriting other entries', async () => {
@@ -65,7 +65,7 @@ describe('claudeCodeAdapter.write', () => {
     const existing = { mcpServers: { other: { command: 'other-server' } } };
     await writeFile(configPath, JSON.stringify(existing), 'utf-8');
 
-    await claudeCodeAdapter.write(configPath, { apiKey: 'cms_secret_test' });
+    await claudeCodeAdapter.write(configPath, { apiKey: 'secret_test' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.mcpServers['other']).toBeDefined();
@@ -74,7 +74,7 @@ describe('claudeCodeAdapter.write', () => {
 
   it('creates parent directories if they do not exist', async () => {
     const configPath = join(tmpDir, 'nested', 'dir', '.mcp.json');
-    await claudeCodeAdapter.write(configPath, { apiKey: 'cms_secret_test' });
+    await claudeCodeAdapter.write(configPath, { apiKey: 'secret_test' });
 
     const content = JSON.parse(await readFile(configPath, 'utf-8'));
     expect(content.mcpServers.eelzap).toBeDefined();
@@ -83,7 +83,7 @@ describe('claudeCodeAdapter.write', () => {
   it('includes custom env vars when present', async () => {
     const configPath = join(tmpDir, '.mcp.json');
     await claudeCodeAdapter.write(configPath, {
-      apiKey: 'cms_secret_test',
+      apiKey: 'secret_test',
       baseUrl: 'http://localhost:5041',
       pathPrefix: '/api/public/v1',
     });
