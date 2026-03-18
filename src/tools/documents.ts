@@ -63,10 +63,11 @@ export function createDocumentTools(client: CmsHttpClient): ToolDefinition[] {
     {
       name: 'update_document',
       title: 'Update Document',
-      description: 'Update a document name or description.',
+      description: 'Update a document name, key, or description.',
       inputSchema: z.object({
         documentKey: KeySchema,
         name: z.string().min(1).max(100).optional(),
+        key: KeySchema.optional(),
         description: z.string().max(500).optional(),
       }),
       annotations: updateAnnotations,
