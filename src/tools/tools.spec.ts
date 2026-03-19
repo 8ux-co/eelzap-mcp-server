@@ -71,12 +71,16 @@ describe('createCollectionTools', () => {
     const tools = createCollectionTools(client);
     const tool = tools.find((t) => t.name === 'create_collection')!;
 
-    await tool.handler({ key: 'blog', name: 'Blog' });
+    const result = await tool.handler({ key: 'blog', name: 'Blog' });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/collections'),
       expect.objectContaining({ method: 'POST' }),
     );
+    expect(result).toMatchObject({
+      id: 'col_new',
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 
   it('update_collection patches /collections/:key', async () => {
@@ -99,12 +103,15 @@ describe('createCollectionTools', () => {
     const tools = createCollectionTools(client);
     const tool = tools.find((t) => t.name === 'delete_collection')!;
 
-    await tool.handler({ collectionKey: 'blog' });
+    const result = await tool.handler({ collectionKey: 'blog' });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/collections/blog'),
       expect.objectContaining({ method: 'DELETE' }),
     );
+    expect(result).toMatchObject({
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 });
 
@@ -238,12 +245,16 @@ describe('createDocumentTools', () => {
     const tools = createDocumentTools(client);
     const tool = tools.find((t) => t.name === 'create_document')!;
 
-    await tool.handler({ key: 'homepage', name: 'Homepage' });
+    const result = await tool.handler({ key: 'homepage', name: 'Homepage' });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/documents'),
       expect.objectContaining({ method: 'POST' }),
     );
+    expect(result).toMatchObject({
+      id: 'doc_1',
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 
   it('update_document patches /documents/:key', async () => {
@@ -266,12 +277,15 @@ describe('createDocumentTools', () => {
     const tools = createDocumentTools(client);
     const tool = tools.find((t) => t.name === 'delete_document')!;
 
-    await tool.handler({ documentKey: 'homepage' });
+    const result = await tool.handler({ documentKey: 'homepage' });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/documents/homepage'),
       expect.objectContaining({ method: 'DELETE' }),
     );
+    expect(result).toMatchObject({
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 });
 
@@ -356,12 +370,21 @@ describe('createDocumentFieldTools', () => {
     const tools = createDocumentFieldTools(client);
     const tool = tools.find((t) => t.name === 'create_document_field')!;
 
-    await tool.handler({ documentKey: 'homepage', key: 'hero_title', label: 'Hero Title', type: 'TEXT' });
+    const result = await tool.handler({
+      documentKey: 'homepage',
+      key: 'hero_title',
+      label: 'Hero Title',
+      type: 'TEXT',
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/documents/homepage/fields'),
       expect.objectContaining({ method: 'POST' }),
     );
+    expect(result).toMatchObject({
+      id: 'field_1',
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 
   it('update_document_field patches /documents/:key/fields/:fieldId', async () => {
@@ -370,7 +393,7 @@ describe('createDocumentFieldTools', () => {
     const tools = createDocumentFieldTools(client);
     const tool = tools.find((t) => t.name === 'update_document_field')!;
 
-    await tool.handler({
+    const result = await tool.handler({
       documentKey: 'homepage',
       fieldId: '4b0e9ec8-d5fc-453f-b390-ece551f64431',
       label: 'Updated Label',
@@ -380,6 +403,9 @@ describe('createDocumentFieldTools', () => {
       new URL('https://cms.example.com/v1/documents/homepage/fields/4b0e9ec8-d5fc-453f-b390-ece551f64431'),
       expect.objectContaining({ method: 'PATCH' }),
     );
+    expect(result).toMatchObject({
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 
   it('delete_document_field deletes /documents/:key/fields/:fieldId', async () => {
@@ -388,12 +414,18 @@ describe('createDocumentFieldTools', () => {
     const tools = createDocumentFieldTools(client);
     const tool = tools.find((t) => t.name === 'delete_document_field')!;
 
-    await tool.handler({ documentKey: 'homepage', fieldId: '4b0e9ec8-d5fc-453f-b390-ece551f64431' });
+    const result = await tool.handler({
+      documentKey: 'homepage',
+      fieldId: '4b0e9ec8-d5fc-453f-b390-ece551f64431',
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/documents/homepage/fields/4b0e9ec8-d5fc-453f-b390-ece551f64431'),
       expect.objectContaining({ method: 'DELETE' }),
     );
+    expect(result).toMatchObject({
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 
   it('reorder_document_fields posts to /documents/:key/fields/reorder', async () => {
@@ -497,12 +529,21 @@ describe('createCollectionFieldTools', () => {
     const tools = createCollectionFieldTools(client);
     const tool = tools.find((t) => t.name === 'create_collection_field')!;
 
-    await tool.handler({ collectionKey: 'blog', key: 'title', label: 'Title', type: 'TEXT' });
+    const result = await tool.handler({
+      collectionKey: 'blog',
+      key: 'title',
+      label: 'Title',
+      type: 'TEXT',
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/collections/blog/fields'),
       expect.objectContaining({ method: 'POST' }),
     );
+    expect(result).toMatchObject({
+      id: 'field_1',
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 
   it('update_collection_field patches /collections/:key/fields/:fieldId', async () => {
@@ -511,7 +552,7 @@ describe('createCollectionFieldTools', () => {
     const tools = createCollectionFieldTools(client);
     const tool = tools.find((t) => t.name === 'update_collection_field')!;
 
-    await tool.handler({
+    const result = await tool.handler({
       collectionKey: 'blog',
       fieldId: '4b0e9ec8-d5fc-453f-b390-ece551f64431',
       label: 'Updated Label',
@@ -521,6 +562,9 @@ describe('createCollectionFieldTools', () => {
       new URL('https://cms.example.com/v1/collections/blog/fields/4b0e9ec8-d5fc-453f-b390-ece551f64431'),
       expect.objectContaining({ method: 'PATCH' }),
     );
+    expect(result).toMatchObject({
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 
   it('delete_collection_field deletes /collections/:key/fields/:fieldId', async () => {
@@ -529,12 +573,18 @@ describe('createCollectionFieldTools', () => {
     const tools = createCollectionFieldTools(client);
     const tool = tools.find((t) => t.name === 'delete_collection_field')!;
 
-    await tool.handler({ collectionKey: 'blog', fieldId: '4b0e9ec8-d5fc-453f-b390-ece551f64431' });
+    const result = await tool.handler({
+      collectionKey: 'blog',
+      fieldId: '4b0e9ec8-d5fc-453f-b390-ece551f64431',
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/collections/blog/fields/4b0e9ec8-d5fc-453f-b390-ece551f64431'),
       expect.objectContaining({ method: 'DELETE' }),
     );
+    expect(result).toMatchObject({
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 
   it('reorder_collection_fields puts /collections/:key/fields/reorder', async () => {

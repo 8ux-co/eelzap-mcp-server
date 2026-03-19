@@ -8,6 +8,7 @@ import {
   updateAnnotations,
 } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
+import { withCodegenHint } from './utils/codegen-hint.js';
 
 export function createDocumentTools(client: CmsHttpClient): ToolDefinition[] {
   return [
@@ -53,12 +54,14 @@ export function createDocumentTools(client: CmsHttpClient): ToolDefinition[] {
         description: z.string().max(500).optional(),
       }),
       annotations: createAnnotations,
-      handler: (body) =>
-        client.request({
+      handler: async (body) =>
+        withCodegenHint(
+          await client.request({
           method: 'POST',
           path: '/documents',
           body,
-        }),
+          }),
+        ),
     },
     {
       name: 'update_document',
@@ -86,11 +89,13 @@ export function createDocumentTools(client: CmsHttpClient): ToolDefinition[] {
         documentKey: KeySchema,
       }),
       annotations: deleteAnnotations,
-      handler: ({ documentKey }) =>
-        client.request({
+      handler: async ({ documentKey }) =>
+        withCodegenHint(
+          await client.request({
           method: 'DELETE',
           path: `/documents/${documentKey}`,
-        }),
+          }),
+        ),
     },
   ];
 }

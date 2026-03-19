@@ -1,6 +1,6 @@
 {
   "name": "@8ux-co/eelzap-mcp-server",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "type": "module",
   "description": "Standalone MCP server for the Eel Zap CMS",
   "license": "MIT",
@@ -12,6 +12,13 @@
   "bugs": {
     "url": "https://github.com/8ux-co/eelzap-mcp-server/issues"
   },
+  "keywords": [
+    "eelzap",
+    "cms",
+    "mcp",
+    "model-context-protocol",
+    "ai"
+  ],
   "bin": {
     "eelzap-mcp": "dist/index.js"
   },

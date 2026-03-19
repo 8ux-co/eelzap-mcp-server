@@ -13,6 +13,7 @@ import {
   updateAnnotations,
 } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
+import { withCodegenHint } from './utils/codegen-hint.js';
 
 export function createDocumentFieldTools(
   client: CmsHttpClient,
@@ -39,12 +40,14 @@ export function createDocumentFieldTools(
         documentKey: KeySchema,
       }),
       annotations: createAnnotations,
-      handler: ({ documentKey, ...body }) =>
-        client.request({
+      handler: async ({ documentKey, ...body }) =>
+        withCodegenHint(
+          await client.request({
           method: 'POST',
           path: `/documents/${documentKey}/fields`,
           body,
-        }),
+          }),
+        ),
     },
     {
       name: 'update_document_field',
@@ -54,12 +57,14 @@ export function createDocumentFieldTools(
         documentKey: KeySchema,
       }),
       annotations: updateAnnotations,
-      handler: ({ documentKey, fieldId, ...body }) =>
-        client.request({
+      handler: async ({ documentKey, fieldId, ...body }) =>
+        withCodegenHint(
+          await client.request({
           method: 'PATCH',
           path: `/documents/${documentKey}/fields/${fieldId}`,
           body,
-        }),
+          }),
+        ),
     },
     {
       name: 'delete_document_field',
@@ -70,11 +75,13 @@ export function createDocumentFieldTools(
         fieldId: UuidSchema,
       }),
       annotations: deleteAnnotations,
-      handler: ({ documentKey, fieldId }) =>
-        client.request({
+      handler: async ({ documentKey, fieldId }) =>
+        withCodegenHint(
+          await client.request({
           method: 'DELETE',
           path: `/documents/${documentKey}/fields/${fieldId}`,
-        }),
+          }),
+        ),
     },
     {
       name: 'reorder_document_fields',

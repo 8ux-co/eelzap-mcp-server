@@ -13,6 +13,7 @@ import {
   updateAnnotations,
 } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
+import { withCodegenHint } from './utils/codegen-hint.js';
 
 export function createCollectionFieldTools(
   client: CmsHttpClient,
@@ -39,12 +40,14 @@ export function createCollectionFieldTools(
         collectionKey: KeySchema,
       }),
       annotations: createAnnotations,
-      handler: ({ collectionKey, ...body }) =>
-        client.request({
+      handler: async ({ collectionKey, ...body }) =>
+        withCodegenHint(
+          await client.request({
           method: 'POST',
           path: `/collections/${collectionKey}/fields`,
           body,
-        }),
+          }),
+        ),
     },
     {
       name: 'update_collection_field',
@@ -54,12 +57,14 @@ export function createCollectionFieldTools(
         collectionKey: KeySchema,
       }),
       annotations: updateAnnotations,
-      handler: ({ collectionKey, fieldId, ...body }) =>
-        client.request({
+      handler: async ({ collectionKey, fieldId, ...body }) =>
+        withCodegenHint(
+          await client.request({
           method: 'PATCH',
           path: `/collections/${collectionKey}/fields/${fieldId}`,
           body,
-        }),
+          }),
+        ),
     },
     {
       name: 'delete_collection_field',
@@ -70,11 +75,13 @@ export function createCollectionFieldTools(
         fieldId: UuidSchema,
       }),
       annotations: deleteAnnotations,
-      handler: ({ collectionKey, fieldId }) =>
-        client.request({
+      handler: async ({ collectionKey, fieldId }) =>
+        withCodegenHint(
+          await client.request({
           method: 'DELETE',
           path: `/collections/${collectionKey}/fields/${fieldId}`,
-        }),
+          }),
+        ),
     },
     {
       name: 'reorder_collection_fields',

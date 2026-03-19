@@ -8,6 +8,7 @@ import {
   updateAnnotations,
 } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
+import { withCodegenHint } from './utils/codegen-hint.js';
 
 export function createCollectionTools(client: CmsHttpClient): ToolDefinition[] {
   return [
@@ -49,12 +50,14 @@ export function createCollectionTools(client: CmsHttpClient): ToolDefinition[] {
         description: z.string().max(500).optional(),
       }),
       annotations: createAnnotations,
-      handler: (args) =>
-        client.request({
+      handler: async (args) =>
+        withCodegenHint(
+          await client.request({
           method: 'POST',
           path: '/collections',
           body: args,
-        }),
+          }),
+        ),
     },
     {
       name: 'update_collection',
@@ -83,12 +86,14 @@ export function createCollectionTools(client: CmsHttpClient): ToolDefinition[] {
         deleteMediaIds: z.array(z.string().uuid()).optional(),
       }),
       annotations: deleteAnnotations,
-      handler: ({ collectionKey, ...body }) =>
-        client.request({
+      handler: async ({ collectionKey, ...body }) =>
+        withCodegenHint(
+          await client.request({
           method: 'DELETE',
           path: `/collections/${collectionKey}`,
           body,
-        }),
+          }),
+        ),
     },
   ];
 }

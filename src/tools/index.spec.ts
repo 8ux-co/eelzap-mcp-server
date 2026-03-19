@@ -48,7 +48,10 @@ describe('createAllTools', () => {
       name: 'Blog',
     });
 
-    expect(response).toEqual({ id: 'col_1' });
+    expect(response).toMatchObject({
+      id: 'col_1',
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/collections'),
       expect.objectContaining({
