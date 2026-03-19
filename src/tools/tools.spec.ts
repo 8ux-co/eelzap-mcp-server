@@ -638,11 +638,22 @@ describe('createSeoTools', () => {
     const tools = createSeoTools(client);
     const tool = tools.find((t) => t.name === 'set_item_seo')!;
 
-    await tool.handler({ collectionKey: 'blog', slug: 'my-post', metaTitle: 'SEO Title' });
+    await tool.handler({
+      collectionKey: 'blog',
+      slug: 'my-post',
+      metaTitle: 'SEO Title',
+      structuredData: { '@type': 'Article' },
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/collections/blog/items/my-post/seo'),
-      expect.objectContaining({ method: 'PATCH' }),
+      expect.objectContaining({
+        method: 'PATCH',
+        body: JSON.stringify({
+          metaTitle: 'SEO Title',
+          structuredData: { '@type': 'Article' },
+        }),
+      }),
     );
   });
 
@@ -666,11 +677,21 @@ describe('createSeoTools', () => {
     const tools = createSeoTools(client);
     const tool = tools.find((t) => t.name === 'set_document_seo')!;
 
-    await tool.handler({ documentKey: 'homepage', metaTitle: 'Homepage SEO' });
+    await tool.handler({
+      documentKey: 'homepage',
+      metaTitle: 'Homepage SEO',
+      structuredData: { '@type': 'WebPage' },
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       new URL('https://cms.example.com/v1/documents/homepage/seo'),
-      expect.objectContaining({ method: 'PUT' }),
+      expect.objectContaining({
+        method: 'PUT',
+        body: JSON.stringify({
+          metaTitle: 'Homepage SEO',
+          structuredData: { '@type': 'WebPage' },
+        }),
+      }),
     );
   });
 });

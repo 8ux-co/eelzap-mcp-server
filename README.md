@@ -334,9 +334,9 @@ If you're running the CMS locally:
 | Tool | Description |
 |------|-------------|
 | `get_item_seo` | Get SEO metadata for a collection item |
-| `set_item_seo` | Set SEO metadata for a collection item |
+| `set_item_seo` | Set SEO metadata for a collection item, including Schema.org structured data |
 | `get_document_seo` | Get SEO metadata for a document |
-| `set_document_seo` | Set SEO metadata for a document |
+| `set_document_seo` | Set SEO metadata for a document, including Schema.org structured data |
 
 ### Delivery API (5 tools)
 | Tool | Description |

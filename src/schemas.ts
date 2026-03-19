@@ -118,6 +118,25 @@ export const SectionUpdateSchema = z.object({
   description: z.string().max(500).optional(),
 });
 
+type JsonObject = { [key: string]: JsonValue };
+type JsonValue = string | number | boolean | null | JsonObject | JsonValue[];
+
+const JsonValueSchema: z.ZodType<JsonValue> = z.lazy(() =>
+  z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.null(),
+    z.array(JsonValueSchema),
+    z.record(z.string(), JsonValueSchema),
+  ]),
+);
+
+const JsonObjectSchema: z.ZodType<JsonObject> = z.record(
+  z.string(),
+  JsonValueSchema,
+);
+
 export const SeoSchema = z.object({
   metaTitle: z.string().max(200).optional(),
   metaDescription: z.string().max(500).optional(),
@@ -126,5 +145,6 @@ export const SeoSchema = z.object({
   noIndex: z.boolean().optional(),
   noFollow: z.boolean().optional(),
   keywords: z.string().optional(),
+  structuredData: JsonObjectSchema.optional(),
   locale: LocaleSchema.optional(),
 });

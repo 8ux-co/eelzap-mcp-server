@@ -83,6 +83,10 @@ describe('createAllTools', () => {
     await setDocumentSeo!.handler({
       documentKey: 'homepage',
       metaTitle: 'Homepage',
+      structuredData: {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+      },
     });
 
     expect(fetchMock).toHaveBeenNthCalledWith(
@@ -97,6 +101,13 @@ describe('createAllTools', () => {
       new URL('https://cms.example.com/v1/documents/homepage/seo'),
       expect.objectContaining({
         method: 'PUT',
+        body: JSON.stringify({
+          metaTitle: 'Homepage',
+          structuredData: {
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+          },
+        }),
       }),
     );
   });
