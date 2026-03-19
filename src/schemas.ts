@@ -52,6 +52,10 @@ export const FieldConstraintsSchema = z
     minLength: z.number().optional(),
     maxLength: z.number().optional(),
     regex: z.string().optional(),
+    currencies: z
+      .array(z.string().regex(/^[A-Z]{3}$/))
+      .min(1)
+      .optional(),
   })
   .strict()
   .optional();
