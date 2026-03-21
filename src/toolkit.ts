@@ -13,6 +13,20 @@ When generating or modifying HTML that includes images within a RICH_TEXT field,
 - data-status: 'draft' or 'published'.
 `;
 
+export const SEO_INSTRUCTIONS = `
+SEO BEST PRACTICES FOR CMS CONTENT:
+
+- metaTitle: keep it under roughly 60 characters and place the main keyword early.
+- metaDescription: aim for roughly 160 characters and summarize the page clearly.
+- ogImageId: use an uploaded media UUID. Prefer 1200x630 images when possible.
+- ogImageAlt: always provide concise alt text for accessibility.
+- canonicalUrl: leave empty for the common case where the URL matches the slug/key. Override it only when the public path differs, especially homepage documents.
+- ogType: use "website" for documents and singleton pages, "article" for collection items like posts or products.
+- twitterCard: prefer "SUMMARY_LARGE_IMAGE" when an OG image is present.
+- structuredData: use schema.org JSON-LD with @context and @type.
+- noIndex/noFollow: only enable them when the page should be excluded from search engines.
+`;
+
 export const readOnlyAnnotations = {
   readOnlyHint: true,
   destructiveHint: false,
@@ -68,7 +82,7 @@ export function registerPrompts(server: McpServer): void {
           role: 'user',
           content: {
             type: 'text',
-            text: RICH_TEXT_INSTRUCTIONS,
+            text: `${RICH_TEXT_INSTRUCTIONS}\n${SEO_INSTRUCTIONS}`,
           },
         },
       ],
