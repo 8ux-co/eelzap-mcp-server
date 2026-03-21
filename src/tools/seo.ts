@@ -32,7 +32,7 @@ export function createSeoTools(client: CmsHttpClient): ToolDefinition[] {
       name: 'set_item_seo',
       title: 'Set Item SEO',
       description:
-        'Update SEO metadata for a collection item. Accepts metaTitle, metaDescription, ogImageId (UUID of an uploaded media item), ogImageAlt, canonicalUrl (full URL override), ogType, twitterCard ("SUMMARY" or "SUMMARY_LARGE_IMAGE"), noIndex, noFollow, keywords, structuredData, and locale. Use "article" for item ogType. Leave canonicalUrl empty unless the real URL differs from the slug.',
+        'Update SEO metadata for a collection item. Accepts metaTitle, metaDescription, ogImageId (UUID of an uploaded media item), ogImageAlt, canonicalUrl (full URL override), ogType, twitterCard ("SUMMARY" or "SUMMARY_LARGE_IMAGE"), noIndex, noFollow, keywords, structuredData, and locale. Use "article" for item ogType. Leave canonicalUrl empty unless the real URL differs from the slug. If locale is omitted the record is written under the site\'s default locale.',
       inputSchema: SeoSchema.extend({
         collectionKey: KeySchema,
         slug: ItemSlugSchema,
@@ -65,7 +65,7 @@ export function createSeoTools(client: CmsHttpClient): ToolDefinition[] {
       name: 'set_document_seo',
       title: 'Set Document SEO',
       description:
-        'Update SEO metadata for a document. Accepts the same fields as set_item_seo. For homepage-style documents, set canonicalUrl explicitly to the real public URL such as "https://example.com/" when the document key is not the live route.',
+        'Update SEO metadata for a document. Accepts the same fields as set_item_seo. For homepage-style documents, set canonicalUrl explicitly to the real public URL such as "https://example.com/" when the document key is not the live route. If locale is omitted the record is written under the site\'s default locale.',
       inputSchema: SeoSchema.extend({
         documentKey: KeySchema,
       }),
