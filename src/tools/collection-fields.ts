@@ -84,6 +84,38 @@ export function createCollectionFieldTools(
         ),
     },
     {
+      name: 'list_deleted_collection_fields',
+      title: 'List Deleted Collection Fields',
+      description:
+        'List all soft-deleted (archived) fields in a collection. Use this before restoring a field to find its ID.',
+      inputSchema: z.object({
+        collectionKey: KeySchema,
+      }),
+      annotations: readOnlyAnnotations,
+      handler: ({ collectionKey }) =>
+        client.request({
+          path: `/collections/${collectionKey}/fields/deleted`,
+        }),
+    },
+    {
+      name: 'restore_collection_field',
+      title: 'Restore Collection Field',
+      description:
+        'Restore a soft-deleted field in a collection. The field is re-appended at the end of the field list.',
+      inputSchema: z.object({
+        collectionKey: KeySchema,
+        fieldId: UuidSchema,
+      }),
+      annotations: updateAnnotations,
+      handler: async ({ collectionKey, fieldId }) =>
+        withCodegenHint(
+          await client.request({
+            method: 'POST',
+            path: `/collections/${collectionKey}/fields/${fieldId}/restore`,
+          }),
+        ),
+    },
+    {
       name: 'reorder_collection_fields',
       title: 'Reorder Collection Fields',
       description: 'Reorder the fields in a collection.',

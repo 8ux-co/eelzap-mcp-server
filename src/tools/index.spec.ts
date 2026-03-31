@@ -12,7 +12,7 @@ describe('createAllTools', () => {
       }),
     );
 
-    expect(tools).toHaveLength(70);
+    expect(tools).toHaveLength(74);
     expect(tools.map((tool) => tool.name)).toEqual(
       expect.arrayContaining([
         'get_site',

@@ -446,6 +446,40 @@ describe('createDocumentFieldTools', () => {
       expect.objectContaining({ method: 'POST' }),
     );
   });
+
+  it('list_deleted_document_fields gets /documents/:key/fields/deleted', async () => {
+    const client = makeClient({ fields: [] });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createDocumentFieldTools(client);
+    const tool = tools.find((t) => t.name === 'list_deleted_document_fields')!;
+
+    await tool.handler({ documentKey: 'homepage' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/documents/homepage/fields/deleted'),
+      expect.objectContaining({ method: 'GET' }),
+    );
+  });
+
+  it('restore_document_field posts to /documents/:key/fields/:fieldId/restore', async () => {
+    const client = makeClient({ field: { id: '4b0e9ec8-d5fc-453f-b390-ece551f64431' } });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createDocumentFieldTools(client);
+    const tool = tools.find((t) => t.name === 'restore_document_field')!;
+
+    const result = await tool.handler({
+      documentKey: 'homepage',
+      fieldId: '4b0e9ec8-d5fc-453f-b390-ece551f64431',
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/documents/homepage/fields/4b0e9ec8-d5fc-453f-b390-ece551f64431/restore'),
+      expect.objectContaining({ method: 'POST' }),
+    );
+    expect(result).toMatchObject({
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
+  });
 });
 
 describe('createDocumentSectionTools', () => {
@@ -604,6 +638,40 @@ describe('createCollectionFieldTools', () => {
       new URL('https://cms.example.com/v1/collections/blog/fields/reorder'),
       expect.objectContaining({ method: 'PUT' }),
     );
+  });
+
+  it('list_deleted_collection_fields gets /collections/:key/fields/deleted', async () => {
+    const client = makeClient({ fields: [] });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createCollectionFieldTools(client);
+    const tool = tools.find((t) => t.name === 'list_deleted_collection_fields')!;
+
+    await tool.handler({ collectionKey: 'blog' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/collections/blog/fields/deleted'),
+      expect.objectContaining({ method: 'GET' }),
+    );
+  });
+
+  it('restore_collection_field posts to /collections/:key/fields/:fieldId/restore', async () => {
+    const client = makeClient({ field: { id: '4b0e9ec8-d5fc-453f-b390-ece551f64431' } });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createCollectionFieldTools(client);
+    const tool = tools.find((t) => t.name === 'restore_collection_field')!;
+
+    const result = await tool.handler({
+      collectionKey: 'blog',
+      fieldId: '4b0e9ec8-d5fc-453f-b390-ece551f64431',
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/collections/blog/fields/4b0e9ec8-d5fc-453f-b390-ece551f64431/restore'),
+      expect.objectContaining({ method: 'POST' }),
+    );
+    expect(result).toMatchObject({
+      _hint: { action: 'run_codegen', command: 'npx eelzap-codegen' },
+    });
   });
 });
 

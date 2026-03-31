@@ -84,6 +84,38 @@ export function createDocumentFieldTools(
         ),
     },
     {
+      name: 'list_deleted_document_fields',
+      title: 'List Deleted Document Fields',
+      description:
+        'List all soft-deleted (archived) fields in a document. Use this before restoring a field to find its ID.',
+      inputSchema: z.object({
+        documentKey: KeySchema,
+      }),
+      annotations: readOnlyAnnotations,
+      handler: ({ documentKey }) =>
+        client.request({
+          path: `/documents/${documentKey}/fields/deleted`,
+        }),
+    },
+    {
+      name: 'restore_document_field',
+      title: 'Restore Document Field',
+      description:
+        'Restore a soft-deleted field in a document. The field is re-appended at the end of the field list.',
+      inputSchema: z.object({
+        documentKey: KeySchema,
+        fieldId: UuidSchema,
+      }),
+      annotations: updateAnnotations,
+      handler: async ({ documentKey, fieldId }) =>
+        withCodegenHint(
+          await client.request({
+            method: 'POST',
+            path: `/documents/${documentKey}/fields/${fieldId}/restore`,
+          }),
+        ),
+    },
+    {
       name: 'reorder_document_fields',
       title: 'Reorder Document Fields',
       description: 'Reorder fields in a document.',
