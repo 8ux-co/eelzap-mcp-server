@@ -27,6 +27,20 @@ SEO BEST PRACTICES FOR CMS CONTENT:
 - noIndex/noFollow: only enable them when the page should be excluded from search engines.
 `;
 
+export const VERSIONING_INSTRUCTIONS = `
+CONTENT VERSIONING — SAFE EDITING WORKFLOW:
+
+ALWAYS prefer the draft workflow over direct updates to prevent destructive overwrites:
+1. create_item_draft / create_document_draft — create a safe draft from the current published version
+2. update_item_draft / update_document_draft — make changes to the draft
+3. publish_item_draft / publish_document_draft — publish only after confirming content is correct
+
+- Save as DRAFT first when creating or modifying content. Only publish after the user confirms.
+- Use list_item_versions / list_document_versions to review history before rollbacks.
+- discard_item_draft / discard_document_draft is non-destructive to published content.
+- rollback_item_version / rollback_document_version creates a new draft from history — it does NOT delete anything.
+`;
+
 export const readOnlyAnnotations = {
   readOnlyHint: true,
   destructiveHint: false,
@@ -82,7 +96,7 @@ export function registerPrompts(server: McpServer): void {
           role: 'user',
           content: {
             type: 'text',
-            text: `${RICH_TEXT_INSTRUCTIONS}\n${SEO_INSTRUCTIONS}`,
+            text: `${RICH_TEXT_INSTRUCTIONS}\n${SEO_INSTRUCTIONS}\n${VERSIONING_INSTRUCTIONS}`,
           },
         },
       ],

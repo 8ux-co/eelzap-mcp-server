@@ -17,6 +17,8 @@ import { createSeoTools } from './seo.js';
 import { createDeliveryTools } from './delivery.js';
 import { createSiteTools } from './sites.js';
 import { createMediaTools } from './media.js';
+import { createItemVersionTools } from './item-versions.js';
+import { createDocumentVersionTools } from './document-versions.js';
 
 function makeClient(mockResponse: unknown = { ok: true }) {
   const fetchMock = vi.fn().mockResolvedValue(
@@ -940,5 +942,205 @@ describe('media upload_media_from_url — SSRF and edge cases', () => {
 
     // The DNS lookup for example.com happens in real network; just check for error
     await expect(tool.handler({ url: 'https://example.com/file.png' })).rejects.toThrow();
+  });
+});
+
+describe('createItemVersionTools', () => {
+  it('list_item_versions calls /collections/:key/items/:slug/versions', async () => {
+    const client = makeClient({ versions: [] });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createItemVersionTools(client);
+    const tool = tools.find((t) => t.name === 'list_item_versions')!;
+
+    await tool.handler({ collectionKey: 'blog', slug: 'my-post' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/collections/blog/items/my-post/versions'),
+      expect.any(Object),
+    );
+  });
+
+  it('get_item_version calls /versions/:id', async () => {
+    const client = makeClient({ version: { id: 'v1' } });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createItemVersionTools(client);
+    const tool = tools.find((t) => t.name === 'get_item_version')!;
+
+    await tool.handler({ collectionKey: 'blog', slug: 'my-post', versionId: '00000000-0000-0000-0000-000000000001' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/collections/blog/items/my-post/versions/00000000-0000-0000-0000-000000000001'),
+      expect.any(Object),
+    );
+  });
+
+  it('create_item_draft posts to /versions', async () => {
+    const client = makeClient({ version: { status: 'DRAFT' } });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createItemVersionTools(client);
+    const tool = tools.find((t) => t.name === 'create_item_draft')!;
+
+    await tool.handler({ collectionKey: 'blog', slug: 'my-post', note: 'Draft note' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/collections/blog/items/my-post/versions'),
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+
+  it('update_item_draft puts to /versions/draft', async () => {
+    const client = makeClient({ version: {} });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createItemVersionTools(client);
+    const tool = tools.find((t) => t.name === 'update_item_draft')!;
+
+    await tool.handler({ collectionKey: 'blog', slug: 'my-post', values: { title: 'Updated' } });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/collections/blog/items/my-post/versions/draft'),
+      expect.objectContaining({ method: 'PUT' }),
+    );
+  });
+
+  it('discard_item_draft deletes /versions/draft', async () => {
+    const client = makeClient({});
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createItemVersionTools(client);
+    const tool = tools.find((t) => t.name === 'discard_item_draft')!;
+
+    await tool.handler({ collectionKey: 'blog', slug: 'my-post' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/collections/blog/items/my-post/versions/draft'),
+      expect.objectContaining({ method: 'DELETE' }),
+    );
+  });
+
+  it('publish_item_draft posts to /versions/draft/publish', async () => {
+    const client = makeClient({});
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createItemVersionTools(client);
+    const tool = tools.find((t) => t.name === 'publish_item_draft')!;
+
+    await tool.handler({ collectionKey: 'blog', slug: 'my-post' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/collections/blog/items/my-post/versions/draft/publish'),
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+
+  it('rollback_item_version posts to /versions/:id/rollback', async () => {
+    const client = makeClient({});
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createItemVersionTools(client);
+    const tool = tools.find((t) => t.name === 'rollback_item_version')!;
+
+    await tool.handler({ collectionKey: 'blog', slug: 'my-post', versionId: '00000000-0000-0000-0000-000000000001' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/collections/blog/items/my-post/versions/00000000-0000-0000-0000-000000000001/rollback'),
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+});
+
+describe('createDocumentVersionTools', () => {
+  it('list_document_versions calls /documents/:key/versions', async () => {
+    const client = makeClient({ versions: [] });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createDocumentVersionTools(client);
+    const tool = tools.find((t) => t.name === 'list_document_versions')!;
+
+    await tool.handler({ documentKey: 'homepage' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/documents/homepage/versions'),
+      expect.any(Object),
+    );
+  });
+
+  it('get_document_version calls /versions/:id', async () => {
+    const client = makeClient({ version: { id: 'v1' } });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createDocumentVersionTools(client);
+    const tool = tools.find((t) => t.name === 'get_document_version')!;
+
+    await tool.handler({ documentKey: 'homepage', versionId: '00000000-0000-0000-0000-000000000001' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/documents/homepage/versions/00000000-0000-0000-0000-000000000001'),
+      expect.any(Object),
+    );
+  });
+
+  it('create_document_draft posts to /versions', async () => {
+    const client = makeClient({ version: { status: 'DRAFT' } });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createDocumentVersionTools(client);
+    const tool = tools.find((t) => t.name === 'create_document_draft')!;
+
+    await tool.handler({ documentKey: 'homepage', note: 'Draft note' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/documents/homepage/versions'),
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+
+  it('update_document_draft puts to /versions/draft', async () => {
+    const client = makeClient({ version: {} });
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createDocumentVersionTools(client);
+    const tool = tools.find((t) => t.name === 'update_document_draft')!;
+
+    await tool.handler({ documentKey: 'homepage', values: { title: 'Updated' } });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/documents/homepage/versions/draft'),
+      expect.objectContaining({ method: 'PUT' }),
+    );
+  });
+
+  it('discard_document_draft deletes /versions/draft', async () => {
+    const client = makeClient({});
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createDocumentVersionTools(client);
+    const tool = tools.find((t) => t.name === 'discard_document_draft')!;
+
+    await tool.handler({ documentKey: 'homepage' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/documents/homepage/versions/draft'),
+      expect.objectContaining({ method: 'DELETE' }),
+    );
+  });
+
+  it('publish_document_draft posts to /versions/draft/publish', async () => {
+    const client = makeClient({});
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createDocumentVersionTools(client);
+    const tool = tools.find((t) => t.name === 'publish_document_draft')!;
+
+    await tool.handler({ documentKey: 'homepage' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/documents/homepage/versions/draft/publish'),
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+
+  it('rollback_document_version posts to /versions/:id/rollback', async () => {
+    const client = makeClient({});
+    const fetchMock = vi.mocked(global.fetch);
+    const tools = createDocumentVersionTools(client);
+    const tool = tools.find((t) => t.name === 'rollback_document_version')!;
+
+    await tool.handler({ documentKey: 'homepage', versionId: '00000000-0000-0000-0000-000000000001' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      new URL('https://cms.example.com/v1/documents/homepage/versions/00000000-0000-0000-0000-000000000001/rollback'),
+      expect.objectContaining({ method: 'POST' }),
+    );
   });
 });

@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
   RICH_TEXT_INSTRUCTIONS,
+  VERSIONING_INSTRUCTIONS,
   readOnlyAnnotations,
   createAnnotations,
   updateAnnotations,
@@ -193,5 +194,19 @@ describe('registerPrompts', () => {
     expect(result.messages[0]?.role).toBe('user');
     expect(result.messages[0]?.content.type).toBe('text');
     expect(result.messages[0]?.content.text).toContain('RICH_TEXT');
+    expect(result.messages[0]?.content.text).toContain('VERSIONING');
+  });
+});
+
+describe('VERSIONING_INSTRUCTIONS', () => {
+  it('is a non-empty string', () => {
+    expect(typeof VERSIONING_INSTRUCTIONS).toBe('string');
+    expect(VERSIONING_INSTRUCTIONS.length).toBeGreaterThan(0);
+  });
+
+  it('mentions draft workflow', () => {
+    expect(VERSIONING_INSTRUCTIONS).toContain('create_item_draft');
+    expect(VERSIONING_INSTRUCTIONS).toContain('publish_item_draft');
+    expect(VERSIONING_INSTRUCTIONS).toContain('DRAFT');
   });
 });

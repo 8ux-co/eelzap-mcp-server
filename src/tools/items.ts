@@ -77,7 +77,7 @@ export function createItemTools(client: CmsHttpClient): ToolDefinition[] {
     {
       name: 'update_item',
       title: 'Update Item',
-      description: 'Update an item and its field-keyed values.\n\n' + RICH_TEXT_INSTRUCTIONS,
+      description: 'Update an item and its field-keyed values directly. Prefer the draft workflow (create_item_draft → update_item_draft → publish_item_draft) for safer editing.\n\n' + RICH_TEXT_INSTRUCTIONS,
       inputSchema: z.object({
         collectionKey: KeySchema,
         slug: ItemSlugSchema,
@@ -114,7 +114,7 @@ export function createItemTools(client: CmsHttpClient): ToolDefinition[] {
     {
       name: 'publish_item',
       title: 'Publish Item',
-      description: 'Publish a draft item.',
+      description: 'Publish a draft item. Prefer publish_item_draft when using the versioned draft workflow.',
       inputSchema: z.object({
         collectionKey: KeySchema,
         slug: ItemSlugSchema,

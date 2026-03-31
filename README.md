@@ -270,7 +270,7 @@ If you're running the CMS locally:
 | `update_collection_section` | Update a section's name |
 | `delete_collection_section` | Delete a section |
 
-### Items (7 tools)
+### Items (7 tools + 7 versioning tools)
 | Tool | Description |
 |------|-------------|
 | `list_items` | List items in a collection (with pagination and search) |
@@ -281,7 +281,18 @@ If you're running the CMS locally:
 | `publish_item` | Publish an item (makes it available via delivery API) |
 | `unpublish_item` | Unpublish an item |
 
-### Documents (5 tools)
+### Item Versioning (7 tools)
+| Tool | Description |
+|------|-------------|
+| `list_item_versions` | List version history for an item |
+| `get_item_version` | Get details of a specific version |
+| `create_item_draft` | Create a draft from the current published version |
+| `update_item_draft` | Update draft field values |
+| `discard_item_draft` | Discard the current draft (non-destructive) |
+| `publish_item_draft` | Publish the draft as the live version |
+| `rollback_item_version` | Create a draft from a historical version |
+
+### Documents (5 tools + 7 versioning tools)
 | Tool | Description |
 |------|-------------|
 | `list_documents` | List all documents (singletons like homepage, about page) |
@@ -318,6 +329,17 @@ If you're running the CMS locally:
 |------|-------------|
 | `publish_document` | Publish a document |
 | `unpublish_document` | Unpublish a document |
+
+### Document Versioning (7 tools)
+| Tool | Description |
+|------|-------------|
+| `list_document_versions` | List version history for a document |
+| `get_document_version` | Get details of a specific version |
+| `create_document_draft` | Create a draft from the current published version |
+| `update_document_draft` | Update draft field values |
+| `discard_document_draft` | Discard the current draft (non-destructive) |
+| `publish_document_draft` | Publish the draft as the live version |
+| `rollback_document_version` | Create a draft from a historical version |
 
 ### Media (7 tools)
 | Tool | Description |

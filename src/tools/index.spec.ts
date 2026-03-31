@@ -12,7 +12,7 @@ describe('createAllTools', () => {
       }),
     );
 
-    expect(tools).toHaveLength(56);
+    expect(tools).toHaveLength(70);
     expect(tools.map((tool) => tool.name)).toEqual(
       expect.arrayContaining([
         'get_site',
@@ -22,6 +22,12 @@ describe('createAllTools', () => {
         'upload_media_from_url',
         'unpublish_media',
         'delivery_get_document',
+        'list_item_versions',
+        'create_item_draft',
+        'publish_item_draft',
+        'list_document_versions',
+        'create_document_draft',
+        'publish_document_draft',
       ]),
     );
   });

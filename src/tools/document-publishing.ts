@@ -15,7 +15,7 @@ export function createDocumentPublishingTools(
     {
       name: 'publish_document',
       title: 'Publish Document',
-      description: 'Publish a document.',
+      description: 'Publish a document. Prefer publish_document_draft when using the versioned draft workflow.',
       inputSchema: schema,
       annotations: updateAnnotations,
       handler: ({ documentKey }) =>

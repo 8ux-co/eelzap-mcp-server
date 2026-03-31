@@ -8,8 +8,10 @@ import { createDocumentFieldTools } from './document-fields.js';
 import { createDocumentPublishingTools } from './document-publishing.js';
 import { createDocumentSectionTools } from './document-sections.js';
 import { createDocumentValueTools } from './document-values.js';
+import { createDocumentVersionTools } from './document-versions.js';
 import { createDocumentTools } from './documents.js';
 import { createItemTools } from './items.js';
+import { createItemVersionTools } from './item-versions.js';
 import { createMediaTools } from './media.js';
 import { createSeoTools } from './seo.js';
 import { createSiteTools } from './sites.js';
@@ -21,11 +23,13 @@ export function createAllTools(client: CmsHttpClient): ToolDefinition[] {
     ...createCollectionFieldTools(client),
     ...createCollectionSectionTools(client),
     ...createItemTools(client),
+    ...createItemVersionTools(client),
     ...createDocumentTools(client),
     ...createDocumentFieldTools(client),
     ...createDocumentSectionTools(client),
     ...createDocumentValueTools(client),
     ...createDocumentPublishingTools(client),
+    ...createDocumentVersionTools(client),
     ...createMediaTools(client),
     ...createSeoTools(client),
     ...createDeliveryTools(client),
