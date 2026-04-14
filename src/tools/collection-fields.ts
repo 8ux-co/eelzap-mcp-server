@@ -11,6 +11,7 @@ import {
   deleteAnnotations,
   readOnlyAnnotations,
   updateAnnotations,
+  FIELD_CREATION_INSTRUCTIONS,
 } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
 import { withCodegenHint } from './utils/codegen-hint.js';
@@ -35,7 +36,7 @@ export function createCollectionFieldTools(
     {
       name: 'create_collection_field',
       title: 'Create Collection Field',
-      description: 'Add a field to a collection.',
+      description: 'Add a field to a collection.\n\n' + FIELD_CREATION_INSTRUCTIONS,
       inputSchema: CollectionFieldCreateSchema.omit({ collectionId: true }).extend({
         collectionKey: KeySchema,
       }),

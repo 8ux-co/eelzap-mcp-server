@@ -11,6 +11,7 @@ import {
   deleteAnnotations,
   readOnlyAnnotations,
   updateAnnotations,
+  FIELD_CREATION_INSTRUCTIONS,
 } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
 import { withCodegenHint } from './utils/codegen-hint.js';
@@ -35,7 +36,7 @@ export function createDocumentFieldTools(
     {
       name: 'create_document_field',
       title: 'Create Document Field',
-      description: 'Add a field to a document.',
+      description: 'Add a field to a document.\n\n' + FIELD_CREATION_INSTRUCTIONS,
       inputSchema: CollectionFieldCreateSchema.omit({ collectionId: true }).extend({
         documentKey: KeySchema,
       }),

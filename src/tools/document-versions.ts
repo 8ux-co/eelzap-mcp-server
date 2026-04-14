@@ -7,6 +7,7 @@ import {
   readOnlyAnnotations,
   updateAnnotations,
   RICH_TEXT_INSTRUCTIONS,
+  FIELD_TYPE_INSTRUCTIONS,
 } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
 
@@ -65,6 +66,7 @@ export function createDocumentVersionTools(
       description:
         'Update the current draft version of a document with new field values. ' +
         'A draft must exist first (use create_document_draft).\n\n' +
+        FIELD_TYPE_INSTRUCTIONS +
         RICH_TEXT_INSTRUCTIONS,
       inputSchema: z.object({
         documentKey: KeySchema,
@@ -72,7 +74,7 @@ export function createDocumentVersionTools(
           .record(z.string(), z.unknown())
           .default({})
           .describe(
-            'Field values keyed by field key. For RICH_TEXT fields, the value MUST be an HTML string.',
+            'Field values keyed by field key. Each value must match the format for its field type — see field type instructions.',
           ),
         locale: LocaleSchema.optional(),
       }),

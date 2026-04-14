@@ -27,6 +27,68 @@ SEO BEST PRACTICES FOR CMS CONTENT:
 - noIndex/noFollow: only enable them when the page should be excluded from search engines.
 `;
 
+export const FIELD_TYPE_INSTRUCTIONS = `
+FIELD VALUE FORMATS BY TYPE:
+
+When setting values for items or documents, each field type expects a specific format:
+
+TEXT TYPES — NEVER put HTML markup in SHORT_TEXT or LONG_TEXT fields. If the content needs formatting, it belongs in a RICH_TEXT field.
+- SHORT_TEXT: plain string. Single-line text for titles, names, labels, taglines. No HTML, no line breaks.
+- LONG_TEXT: plain string. Multi-line text for descriptions, summaries, excerpts, notes. No HTML — use line breaks for formatting.
+- RICH_TEXT: HTML string. For articles, blog posts, page body content — anything needing formatting (bold, links, headings, images). See RICH_TEXT instructions for details.
+
+NUMERIC TYPES:
+- NUMBER: number (e.g., 3.14)
+- INTEGER: whole number (e.g., 42)
+- BOOLEAN: boolean (true or false)
+
+DATE TYPES:
+- DATE: ISO 8601 date string (e.g., "2025-01-15")
+- DATETIME: ISO 8601 datetime string (e.g., "2025-01-15T10:30:00Z")
+
+CURRENCY:
+- CURRENCY: object with amountMinor (amount in smallest unit, e.g. cents) and currency (ISO 4217 code).
+  Example: { "amountMinor": 1500, "currency": "USD" } represents $15.00.
+
+ENUM:
+- ENUM: string matching one of the field's defined options[].value
+
+MEDIA TYPES — values are media UUID strings referencing uploaded media items. Use list/upload media tools to obtain UUIDs.
+- IMAGE: media UUID string
+- VIDEO: media UUID string
+- FILE: media UUID string
+
+GALLERY:
+- GALLERY: array of objects, each with mediaId (required UUID), caption (optional string), and description (optional string).
+  Example: [{ "mediaId": "550e8400-...", "caption": "Photo caption" }]
+
+OTHER:
+- URL: valid URL string (e.g., "https://example.com")
+- EMAIL: valid email string (e.g., "user@example.com")
+`;
+
+export const FIELD_CREATION_INSTRUCTIONS = `
+FIELD CREATION GUIDE:
+
+When creating fields, choose the correct type and provide required companion properties:
+
+CHOOSING TEXT TYPES:
+- SHORT_TEXT: titles, names, labels, taglines, slugs — short single-line values
+- LONG_TEXT: plain-text descriptions, summaries, excerpts, notes — multi-line but no formatting needed
+- RICH_TEXT: article bodies, page content, formatted descriptions — anything needing headings, bold, links, images, or HTML
+
+TYPE-SPECIFIC REQUIREMENTS:
+- ENUM: must provide options array with [{label, value, color?}] entries
+- CURRENCY: should provide constraints.currencies with allowed ISO 4217 codes (e.g., ["USD", "EUR"])
+- GALLERY: should set galleryAllowedTypes ('IMAGE', 'VIDEO', or 'IMAGE,VIDEO') and optionally galleryMinItems/galleryMaxItems
+
+CONSTRAINT APPLICABILITY:
+- min/max: for NUMBER, INTEGER, and CURRENCY fields
+- minLength/maxLength/regex: for SHORT_TEXT, LONG_TEXT, URL, and EMAIL fields
+- currencies: for CURRENCY fields only
+- galleryMinItems/galleryMaxItems/galleryAllowedTypes: for GALLERY fields only
+`;
+
 export const VERSIONING_INSTRUCTIONS = `
 CONTENT VERSIONING — SAFE EDITING WORKFLOW:
 
@@ -96,7 +158,7 @@ export function registerPrompts(server: McpServer): void {
           role: 'user',
           content: {
             type: 'text',
-            text: `${RICH_TEXT_INSTRUCTIONS}\n${SEO_INSTRUCTIONS}\n${VERSIONING_INSTRUCTIONS}`,
+            text: `${FIELD_TYPE_INSTRUCTIONS}\n${FIELD_CREATION_INSTRUCTIONS}\n${RICH_TEXT_INSTRUCTIONS}\n${SEO_INSTRUCTIONS}\n${VERSIONING_INSTRUCTIONS}`,
           },
         },
       ],

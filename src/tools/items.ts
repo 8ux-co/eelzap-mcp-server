@@ -13,6 +13,7 @@ import {
   readOnlyAnnotations,
   updateAnnotations,
   RICH_TEXT_INSTRUCTIONS,
+  FIELD_TYPE_INSTRUCTIONS,
 } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
 
@@ -59,11 +60,11 @@ export function createItemTools(client: CmsHttpClient): ToolDefinition[] {
     {
       name: 'create_item',
       title: 'Create Item',
-      description: 'Create a draft item with field-keyed values.\n\n' + RICH_TEXT_INSTRUCTIONS,
+      description: 'Create a draft item with field-keyed values.\n\n' + FIELD_TYPE_INSTRUCTIONS + RICH_TEXT_INSTRUCTIONS,
       inputSchema: z.object({
         collectionKey: KeySchema,
         slug: ItemSlugSchema,
-        values: z.record(z.string(), z.unknown()).describe('Field values. For RICH_TEXT fields, the value MUST be an HTML string with formatting conforming to instructions, NOT a JSON object.'),
+        values: z.record(z.string(), z.unknown()).describe('Field values keyed by field key. Each value must match the format for its field type — see field type instructions.'),
         locale: LocaleSchema.optional(),
       }),
       annotations: createAnnotations,
@@ -77,12 +78,12 @@ export function createItemTools(client: CmsHttpClient): ToolDefinition[] {
     {
       name: 'update_item',
       title: 'Update Item',
-      description: 'Update an item and its field-keyed values directly. Prefer the draft workflow (create_item_draft → update_item_draft → publish_item_draft) for safer editing.\n\n' + RICH_TEXT_INSTRUCTIONS,
+      description: 'Update an item and its field-keyed values directly. Prefer the draft workflow (create_item_draft → update_item_draft → publish_item_draft) for safer editing.\n\n' + FIELD_TYPE_INSTRUCTIONS + RICH_TEXT_INSTRUCTIONS,
       inputSchema: z.object({
         collectionKey: KeySchema,
         slug: ItemSlugSchema,
         nextSlug: ItemSlugSchema.optional(),
-        values: z.record(z.string(), z.unknown()).describe('Field values. For RICH_TEXT fields, the value MUST be an HTML string with formatting conforming to instructions, NOT a JSON object.').optional(),
+        values: z.record(z.string(), z.unknown()).describe('Field values keyed by field key. Each value must match the format for its field type — see field type instructions.').optional(),
         locale: LocaleSchema.optional(),
       }),
       annotations: updateAnnotations,

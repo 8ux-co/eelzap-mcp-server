@@ -27,7 +27,7 @@ export const PaginationSchema = {
 export const SearchSchema = z.string().min(1).optional();
 
 export const FieldTypeSchema = z.enum([
-  'TEXT',
+  'SHORT_TEXT',
   'LONG_TEXT',
   'RICH_TEXT',
   'NUMBER',
@@ -47,15 +47,16 @@ export const FieldTypeSchema = z.enum([
 
 export const FieldConstraintsSchema = z
   .object({
-    min: z.number().optional(),
-    max: z.number().optional(),
-    minLength: z.number().optional(),
-    maxLength: z.number().optional(),
-    regex: z.string().optional(),
+    min: z.number().optional().describe('Minimum value. Applies to NUMBER, INTEGER, and CURRENCY fields.'),
+    max: z.number().optional().describe('Maximum value. Applies to NUMBER, INTEGER, and CURRENCY fields.'),
+    minLength: z.number().optional().describe('Minimum character length. Applies to SHORT_TEXT, LONG_TEXT, URL, and EMAIL fields.'),
+    maxLength: z.number().optional().describe('Maximum character length. Applies to SHORT_TEXT, LONG_TEXT, URL, and EMAIL fields.'),
+    regex: z.string().optional().describe('Regex validation pattern. Applies to SHORT_TEXT, LONG_TEXT, URL, and EMAIL fields.'),
     currencies: z
       .array(z.string().regex(/^[A-Z]{3}$/))
       .min(1)
-      .optional(),
+      .optional()
+      .describe('Allowed ISO 4217 currency codes (e.g., ["USD", "EUR"]). Required for CURRENCY fields.'),
   })
   .strict()
   .optional();
@@ -68,7 +69,8 @@ export const EnumOptionsSchema = z
       color: z.string().optional(),
     }),
   )
-  .optional();
+  .optional()
+  .describe('Required for ENUM fields. Array of selectable options with label, value, and optional color.');
 
 export const CollectionFieldCreateSchema = z.object({
   collectionId: UuidSchema,
@@ -84,9 +86,9 @@ export const CollectionFieldCreateSchema = z.object({
   constraints: FieldConstraintsSchema,
   defaultValue: z.string().optional(),
   options: EnumOptionsSchema,
-  galleryMinItems: z.number().optional(),
-  galleryMaxItems: z.number().optional(),
-  galleryAllowedTypes: z.string().optional(),
+  galleryMinItems: z.number().optional().describe('Only for GALLERY fields. Minimum number of gallery entries.'),
+  galleryMaxItems: z.number().optional().describe('Only for GALLERY fields. Maximum number of gallery entries.'),
+  galleryAllowedTypes: z.string().optional().describe("Only for GALLERY fields. Allowed media types: 'IMAGE', 'VIDEO', or 'IMAGE,VIDEO'."),
 });
 
 export const CollectionFieldUpdateSchema = z.object({
@@ -102,9 +104,9 @@ export const CollectionFieldUpdateSchema = z.object({
   constraints: FieldConstraintsSchema,
   defaultValue: z.string().optional(),
   options: EnumOptionsSchema,
-  galleryMinItems: z.number().optional(),
-  galleryMaxItems: z.number().optional(),
-  galleryAllowedTypes: z.string().optional(),
+  galleryMinItems: z.number().optional().describe('Only for GALLERY fields. Minimum number of gallery entries.'),
+  galleryMaxItems: z.number().optional().describe('Only for GALLERY fields. Maximum number of gallery entries.'),
+  galleryAllowedTypes: z.string().optional().describe("Only for GALLERY fields. Allowed media types: 'IMAGE', 'VIDEO', or 'IMAGE,VIDEO'."),
 });
 
 export const SectionCreateSchema = z.object({

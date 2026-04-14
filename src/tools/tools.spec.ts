@@ -376,7 +376,7 @@ describe('createDocumentFieldTools', () => {
       documentKey: 'homepage',
       key: 'hero_title',
       label: 'Hero Title',
-      type: 'TEXT',
+      type: 'SHORT_TEXT',
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
@@ -569,7 +569,7 @@ describe('createCollectionFieldTools', () => {
       collectionKey: 'blog',
       key: 'title',
       label: 'Title',
-      type: 'TEXT',
+      type: 'SHORT_TEXT',
     });
 
     expect(fetchMock).toHaveBeenCalledWith(

@@ -7,6 +7,7 @@ import {
   readOnlyAnnotations,
   updateAnnotations,
   RICH_TEXT_INSTRUCTIONS,
+  FIELD_TYPE_INSTRUCTIONS,
 } from '../toolkit.js';
 import type { ToolDefinition } from '../types.js';
 
@@ -68,6 +69,7 @@ export function createItemVersionTools(
       description:
         'Update the current draft version of an item with new field values. ' +
         'A draft must exist first (use create_item_draft).\n\n' +
+        FIELD_TYPE_INSTRUCTIONS +
         RICH_TEXT_INSTRUCTIONS,
       inputSchema: z.object({
         collectionKey: KeySchema,
@@ -76,7 +78,7 @@ export function createItemVersionTools(
           .record(z.string(), z.unknown())
           .optional()
           .describe(
-            'Field values keyed by field key. For RICH_TEXT fields, the value MUST be an HTML string.',
+            'Field values keyed by field key. Each value must match the format for its field type — see field type instructions.',
           ),
         nextSlug: ItemSlugSchema.optional().describe('New slug for the item.'),
         locale: LocaleSchema.optional(),
